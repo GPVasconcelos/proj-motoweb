@@ -1,34 +1,105 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { DeliveryStatus } from '@prisma/client';
 
 @Injectable()
-export class ClienteService {
+export class ClientService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createCliente(userId: number, data: any) {
+  /*Cadastrar um Cliente*/
+  async createClient(
+    userId: number,
+    data: { cnpj: string; stateReg?: string; fantasyName: string; sector: string }
+  ) {
     return this.prisma.client.create({
-      data: { ...data, userId }
+      data: {
+        userId,
+        cnpj: data.cnpj,
+        stateReg: data.stateReg,
+        fantasyName: data.fantasyName,
+        sector: data.sector,
+      },
     });
   }
 
-  async getAllClientes() {
+  /* Listar Cliente */
+  async getClients() {
     return this.prisma.client.findMany();
   }
 
-  async getClienteById(id: number) {
-    const cliente = await this.prisma.client.findUnique({ where: { id } });
-    if (!cliente) throw new NotFoundException('Cliente not found');
-    return cliente;
+  /* Obter Cliente por ID */
+  async getClientById(clientId: number) {
+    const client = await this.prisma.client.findUnique({ where: { id: clientId } });
+
+    if (!client) {
+      throw new NotFoundException('Cliente não encontrado');
+    }
+
+    return client;
   }
 
-  async updateCliente(id: number, data: any) {
+  /* Atualizar Cliente */
+  async updateClient(clientId: number, data: any) {
+    const client = await this.prisma.client.findUnique({ where: { id: clientId } });
+
+    if (!client) {
+      throw new NotFoundException('Cliente não encontrado');
+    }
+
     return this.prisma.client.update({
-      where: { id },
+      where: { id: clientId },
       data,
     });
   }
 
-  async deleteCliente(id: number) {
-    return this.prisma.client.delete({ where: { id } });
+  /* Remover Cliente */
+  async deleteClient(clientId: number) {
+    const client = await this.prisma.client.findUnique({ where: { id: clientId } });
+
+    if (!client) {
+      throw new NotFoundException('Cliente não encontrado');
+    }
+
+    return this.prisma.client.delete({ where: { id: clientId } });
+  }
+
+  /* Criar Entrega */
+  async createDelivery(
+    clientId: number,
+    data: { supplierId: number; pickup: string; destination: string; recipient: string; serviceType: string }
+  ) {
+    return this.prisma.delivery.create({
+      data: {
+        clientId,
+        supplierId: data.supplierId,
+        pickup: data.pickup,
+        destination: data.destination,
+        recipient: data.recipient,
+        serviceType: data.serviceType,
+        status: DeliveryStatus.PENDING,
+        requestedAt: new Date(),
+      },
+    });
+  }
+
+  /* Listar Entregas do Cliente */
+  async getDeliveriesByClient(clientId: number) {
+    return this.prisma.delivery.findMany({
+      where: { clientId },
+      orderBy: { requestedAt: 'desc' },
+    });
+  }
+
+  /* Consultar Entrega Específica */
+  async getDeliveryById(clientId: number, deliveryId: number) {
+    const delivery = await this.prisma.delivery.findUnique({
+      where: { id: deliveryId },
+    });
+
+    if (!delivery || delivery.clientId !== clientId) {
+      throw new NotFoundException('Entrega não encontrada ou não pertence a este cliente');
+    }
+
+    return delivery;
   }
 }

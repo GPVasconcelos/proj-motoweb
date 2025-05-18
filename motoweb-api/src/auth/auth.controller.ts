@@ -24,3 +24,4 @@ async register(
     return this.authService.login(email, password);
   }
 }
+
