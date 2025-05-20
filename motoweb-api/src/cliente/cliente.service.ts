@@ -1,25 +1,44 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { DeliveryStatus } from '@prisma/client';
+import { CreateClientDto } from './dto/create-cliente.dto';
+import { ClientEntity } from './entities/client.entity';
+import { Client } from '@prisma/client';
+import { UpdateClientDto } from './dto/update-client.dto';
+
 
 @Injectable()
 export class ClientService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {};
+
+  private mapToClientEntity(client: Client): ClientEntity {
+    return {
+      id: client.id,
+      userId: client.userId,
+      cnpj: client.cnpj,
+      stateReg: client.stateReg,
+      fantasyName: client.fantasyName,
+      sector: client.sector,
+      createdAt: client.createdAt,
+      updatedAt: client.updatedAt,
+    };
+  }
 
   /*Cadastrar um Cliente*/
   async createClient(
-    userId: number,
-    data: { cnpj: string; stateReg?: string; fantasyName: string; sector: string }
-  ) {
-    return this.prisma.client.create({
+    createClienteDto: CreateClientDto
+  ): Promise<ClientEntity> {
+    const client = await this.prisma.client.create({
       data: {
-        userId,
-        cnpj: data.cnpj,
-        stateReg: data.stateReg,
-        fantasyName: data.fantasyName,
-        sector: data.sector,
+        userId: createClienteDto.userId,
+        cnpj: createClienteDto.cnpj,
+        stateReg: createClienteDto.stateReg,
+        fantasyName: createClienteDto.fantasyName,
+        sector: createClienteDto.sector,
       },
     });
+
+    return this.mapToClientEntity(client);
   }
 
   /* Listar Cliente */
@@ -39,17 +58,23 @@ export class ClientService {
   }
 
   /* Atualizar Cliente */
-  async updateClient(clientId: number, data: any) {
-    const client = await this.prisma.client.findUnique({ where: { id: clientId } });
+  async updateClient(clientId: number, updateClientDto: UpdateClientDto): Promise<ClientEntity> {
+    const clientExists = await this.prisma.client.findUnique({ where: { id: clientId } });
 
-    if (!client) {
+    if (!clientExists) {
       throw new NotFoundException('Cliente não encontrado');
     }
 
-    return this.prisma.client.update({
+    const client = await this.prisma.client.update({
       where: { id: clientId },
-      data,
+      data: {
+        cnpj: updateClientDto.cnpj,
+        stateReg: updateClientDto.stateReg,
+        fantasyName: updateClientDto.fantasyName,
+        sector: updateClientDto.sector,
+      },
     });
+    return this.mapToClientEntity(client);
   }
 
   /* Remover Cliente */

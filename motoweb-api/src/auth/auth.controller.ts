@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -23,5 +23,9 @@ async register(
   ) {
     return this.authService.login(email, password);
   }
-}
 
+  @Get()
+  getUsers() {
+    return this.authService.getUsers();
+  }
+}

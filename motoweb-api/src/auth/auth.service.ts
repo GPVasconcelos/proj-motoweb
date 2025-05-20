@@ -49,6 +49,11 @@ export class AuthService {
     return this.generateToken(user.id, user.email);
   }
 
+  /* Listar Usuários */
+  async getUsers() {
+    return this.prisma.user.findMany();
+  }
+
   private generateToken(userId: number, email: string) {
     const payload = { sub: userId, email };
     return {
