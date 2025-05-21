@@ -1,41 +1,63 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { SupplierEntity } from './entities/supplier.entity';
+import { CreateSupplierDto } from './dto/create-supplier.dto';
+import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { DeliveryStatus } from '@prisma/client';
 
 @Injectable()
 export class SupplierService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /* Cadastrar uma Central Fornecedora */
-  async createSupplier(
-    userId: number,
-    data: { fantasyName: string; cnpj: string; operation: string }
-  ) {
-    return this.prisma.supplier.create({
-      data: {
-        userId,
-        fantasyName: data.fantasyName,
-        cnpj: data.cnpj,
-        operation: data.operation,
-      },
-    });
+  // Mapear para SupplierEntity
+  private mapToSupplierEntity(supplier: any): SupplierEntity {
+    return {
+      id: supplier.id,
+      userId: supplier.userId,
+      fantasyName: supplier.fantasyName,
+      cnpj: supplier.cnpj,
+      operation: supplier.operation,
+      createdAt: supplier.createdAt,
+      updatedAt: supplier.updatedAt,
+    };
   }
 
-  /* Atualizar Central Fornecedora */
-  async updateSupplier(supplierId: number, data: any) {
+  //Cadastrar uma Central Fornecedora
+  async createSupplier(createSupplierDto: CreateSupplierDto): Promise<SupplierEntity> {
+    const supplier = await this.prisma.supplier.create({
+      data: {
+        userId: createSupplierDto.userId,
+        fantasyName: createSupplierDto.fantasyName,
+        cnpj: createSupplierDto.cnpj,
+        operation: createSupplierDto.operation,
+      },
+    });
+
+    return this.mapToSupplierEntity(supplier);
+  }
+
+  //Atualizar Central Fornecedora
+  async updateSupplier(supplierId: number, updateSupplierDto: UpdateSupplierDto): Promise<SupplierEntity> {
     const supplier = await this.prisma.supplier.findUnique({ where: { id: supplierId } });
 
     if (!supplier) {
       throw new NotFoundException('Central Fornecedora não encontrada');
     }
 
-    return this.prisma.supplier.update({
+    const updated = await this.prisma.supplier.update({
       where: { id: supplierId },
-      data,
+      data: {
+        userId: updateSupplierDto.userId,
+        fantasyName: updateSupplierDto.fantasyName,
+        cnpj: updateSupplierDto.cnpj,
+        operation: updateSupplierDto.operation,
+      },
     });
+
+    return this.mapToSupplierEntity(updated);
   }
 
-  /* Remover Central Fornecedora */
+  //Remover Central Fornecedora
   async deleteSupplier(supplierId: number) {
     const supplier = await this.prisma.supplier.findUnique({ where: { id: supplierId } });
 
@@ -46,7 +68,7 @@ export class SupplierService {
     return this.prisma.supplier.delete({ where: { id: supplierId } });
   }
 
-  /* Obter Central Fornecedora por ID */
+  // Obter Central Fornecedora por ID
   async getSupplierById(supplierId: number) {
     const supplier = await this.prisma.supplier.findUnique({ where: { id: supplierId } });
 
@@ -57,14 +79,14 @@ export class SupplierService {
     return supplier;
   }
 
-  /* Listar Centrais Fornecedoras */
-  async getAllSuppliers() {
-    return this.prisma.supplier.findMany();
+  // Listar Centrais Fornecedoras
+  async getAllSuppliers(): Promise<SupplierEntity[]> {
+    const suppliers = await this.prisma.supplier.findMany();
+    return suppliers.map((s) => this.mapToSupplierEntity(s));
   }
 
- 
-  /* Visualizar Entregas Pendentes */
-  async getPendingDeliveries(supplierId: number) {
+  // Visualizar Entregas Pendentes
+  async getPendingDeliverys(supplierId: number) {
     return this.prisma.delivery.findMany({
       where: {
         supplierId,
@@ -73,7 +95,7 @@ export class SupplierService {
     });
   }
 
-  /*Atribuir Motoboy a uma Entrega*/
+  // Atribuir Motoboy a uma Entrega
   async assignMotoboy(deliveryId: number, motoboyId: number) {
     const delivery = await this.prisma.delivery.findUnique({ where: { id: deliveryId } });
 
@@ -90,7 +112,7 @@ export class SupplierService {
     });
   }
 
-  /*Cancelar Entrega*/
+  // Cancelar Entrega
   async cancelDelivery(deliveryId: number) {
     const delivery = await this.prisma.delivery.findUnique({ where: { id: deliveryId } });
 
@@ -104,17 +126,17 @@ export class SupplierService {
     });
   }
 
-  /*Relatório de Entregas por Status*/
-  async getDeliveriesByStatus(supplierId: number, status: DeliveryStatus) {
+  // Relatório de Entregas por Status
+  async getDeliverysByStatus(supplierId: number, status: DeliveryStatus) {
     return this.prisma.delivery.findMany({
       where: {
         supplierId,
         status,
       },
     });
-  }
+  } 
 
-  /*Histórico de Entregas*/
+  // Histórico de Entregas
   async getDeliveryHistory(supplierId: number) {
     return this.prisma.delivery.findMany({
       where: { supplierId },

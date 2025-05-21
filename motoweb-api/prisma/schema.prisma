@@ -77,6 +77,7 @@ model Supplier {
 model Motoboy {
   id              Int       @id @default(autoincrement())
   userId          Int       @unique
+  name            String    @db.VarChar(100)
   cpf             String    @db.VarChar(14)
   cnh             String    @db.VarChar(20)
   gender          String    @db.VarChar(100)

@@ -24,7 +24,7 @@ export class ClientService {
     };
   }
 
-  /*Cadastrar um Cliente*/
+  // Cadastrar um Cliente
   async createClient(
     createClienteDto: CreateClientDto
   ): Promise<ClientEntity> {
@@ -41,12 +41,12 @@ export class ClientService {
     return this.mapToClientEntity(client);
   }
 
-  /* Listar Cliente */
+  // Listar Cliente
   async getClients() {
     return this.prisma.client.findMany();
   }
 
-  /* Obter Cliente por ID */
+  // Obter Cliente por ID
   async getClientById(clientId: number) {
     const client = await this.prisma.client.findUnique({ where: { id: clientId } });
 
@@ -57,7 +57,7 @@ export class ClientService {
     return client;
   }
 
-  /* Atualizar Cliente */
+  // Atualizar Cliente
   async updateClient(clientId: number, updateClientDto: UpdateClientDto): Promise<ClientEntity> {
     const clientExists = await this.prisma.client.findUnique({ where: { id: clientId } });
 
@@ -77,7 +77,7 @@ export class ClientService {
     return this.mapToClientEntity(client);
   }
 
-  /* Remover Cliente */
+  //Deletar Cliente
   async deleteClient(clientId: number) {
     const client = await this.prisma.client.findUnique({ where: { id: clientId } });
 
@@ -88,7 +88,7 @@ export class ClientService {
     return this.prisma.client.delete({ where: { id: clientId } });
   }
 
-  /* Criar Entrega */
+  //Criar Entrega
   async createDelivery(
     clientId: number,
     data: { supplierId: number; pickup: string; destination: string; recipient: string; serviceType: string }
@@ -107,15 +107,15 @@ export class ClientService {
     });
   }
 
-  /* Listar Entregas do Cliente */
-  async getDeliveriesByClient(clientId: number) {
+  //Listar Entregas do Cliente
+  async getDeliverysByClient(clientId: number) {
     return this.prisma.delivery.findMany({
       where: { clientId },
       orderBy: { requestedAt: 'desc' },
     });
   }
 
-  /* Consultar Entrega Específica */
+  //Consultar Entrega Específica
   async getDeliveryById(clientId: number, deliveryId: number) {
     const delivery = await this.prisma.delivery.findUnique({
       where: { id: deliveryId },

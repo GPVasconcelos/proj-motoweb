@@ -1,87 +1,94 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { MotoboyService } from './motoboy.service';
+import { CreateMotoboyDto } from './dto/create-motoboy.dto';
+import { UpdateMotoboyDto } from './dto/update-motoboy.dto';
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { DeliveryStatus } from '@prisma/client';
 
 @Controller('motoboy')
 export class MotoboyController {
   constructor(private readonly motoboyService: MotoboyService) {}
 
-  /* Cadastrar um Motoboy */
+  // Cadastrar um Motoboy
   @Post()
-  async createMotoboy(
-    @Body() data: { userId: number; cpf: string; cnh: string; status: string; gender: string; emergencyContact: string }
-  ) {
-    return this.motoboyService.createMotoboy(data.userId, data);
+  createMotoboy(@Body() createMotoboyDto: CreateMotoboyDto) {
+    return this.motoboyService.createMotoboy(createMotoboyDto);
   }
 
-  /* Listar Motoboy */
+  // Listar Motoboys
   @Get()
-  async getMotoboys() {
+  getMotoboys() {
     return this.motoboyService.getMotoboys();
   }
 
-  /* Obter Motoboy por ID */
+  // Obter Motoboy por ID
   @Get(':id')
-  async getMotoboyById(@Param('id') id: string) {
+  getMotoboyById(@Param('id') id: string) {
     return this.motoboyService.getMotoboyById(parseInt(id));
   }
 
-  /* Atualizar Motoboy */
+  // Atualizar Motoboy
   @Patch(':id')
-  async updateMotoboy(@Param('id') id: string, @Body() data: any) {
-    return this.motoboyService.updateMotoboy(parseInt(id), data);
+  updateMotoboy(@Param('id') id: string, @Body() updateMotoboyDto: UpdateMotoboyDto) {
+    return this.motoboyService.updateMotoboy(parseInt(id), updateMotoboyDto);
   }
 
-  /* Remover Motoboy */
+  // Remover Motoboy
   @Delete(':id')
-  async deleteMotoboy(@Param('id') id: string) {
+  deleteMotoboy(@Param('id') id: string) {
     return this.motoboyService.deleteMotoboy(parseInt(id));
   }
 
-  /* Registrar um Veículo */
+  // Registrar Veículo
   @Post(':id/vehicles')
-  async createVehicle(
-    @Param('id') id: string,
-    @Body() data: { model: string; color: string; type: string; renavam: string; year: number; plate: string }
-  ) {
-    return this.motoboyService.createVehicle(parseInt(id), data);
+  createVehicle(@Param('id') id: string, @Body() createVehicleDto: CreateVehicleDto) {
+    return this.motoboyService.createVehicle(parseInt(id), createVehicleDto);
+  }
+
+  // Listar Veículos do Motoboy
+  @Get(':id/vehicles')
+  getVehiclesByMotoboy(@Param('id') id: string) {
+    return this.motoboyService.getVehiclesByMotoboy(parseInt(id));
   }
 
   /* Atualizar Veículo */
   @Patch(':id/vehicles/:vehicleId')
-  async updateVehicle(
+  updateVehicle(
     @Param('id') id: string,
     @Param('vehicleId') vehicleId: string,
-    @Body() data: any
+    @Body() updateVehicleDto: UpdateVehicleDto,
   ) {
-    return this.motoboyService.updateVehicle(parseInt(id), parseInt(vehicleId), data);
+    return this.motoboyService.updateVehicle(
+      parseInt(id),
+      parseInt(vehicleId),
+      updateVehicleDto,
+    );
   }
 
   /* Remover Veículo */
   @Delete(':id/vehicles/:vehicleId')
-  async deleteVehicle(@Param('id') id: string, @Param('vehicleId') vehicleId: string) {
+  deleteVehicle(@Param('id') id: string, @Param('vehicleId') vehicleId: string) {
     return this.motoboyService.deleteVehicle(parseInt(id), parseInt(vehicleId));
   }
 
-  /* Listar Veículos */
-  @Get(':id/vehicles')
-  async getVehiclesByMotoboy(@Param('id') id: string) {
-    return this.motoboyService.getVehiclesByMotoboy(parseInt(id));
-  }
-
-  /* Listar Entregas */
+  /* Listar Entregas do Motoboy */
   @Get(':id/deliveries')
-  async getDeliveriesByMotoboy(@Param('id') id: string) {
+  getDeliveriesByMotoboy(@Param('id') id: string) {
     return this.motoboyService.getDeliveriesByMotoboy(parseInt(id));
   }
 
   /* Atualizar Status da Entrega */
   @Patch(':id/deliveries/:deliveryId/status')
-  async updateDeliveryStatus(
+  updateDeliveryStatus(
     @Param('id') id: string,
     @Param('deliveryId') deliveryId: string,
-    @Body('status') status: DeliveryStatus
+    @Body('status') status: DeliveryStatus,
   ) {
-    return this.motoboyService.updateDeliveryStatus(parseInt(id), parseInt(deliveryId), status);
+    return this.motoboyService.updateDeliveryStatus(
+      parseInt(id),
+      parseInt(deliveryId),
+      status,
+    );
   }
 }
