@@ -73,13 +73,13 @@ export class MotoboyController {
   }
 
   /* Listar Entregas do Motoboy */
-  @Get(':id/deliveries')
+  @Get(':id/delivery')
   getDeliveriesByMotoboy(@Param('id') id: string) {
     return this.motoboyService.getDeliveriesByMotoboy(parseInt(id));
   }
 
   /* Atualizar Status da Entrega */
-  @Patch(':id/deliveries/:deliveryId/status')
+  @Patch(':id/delivery/:deliveryId/status')
   updateDeliveryStatus(
     @Param('id') id: string,
     @Param('deliveryId') deliveryId: string,
