@@ -1,0 +1,15 @@
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+a {
+  pointer-events: none;  /* ERRADO - impede clicar */
+}
+
+div {
+  z-index: -1;  /* Pode sobrepor o link e impedir o clique */
+}
