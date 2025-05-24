@@ -1,0 +1,39 @@
+<div class="container">
+  <h2>Solicitar Nova Entrega</h2>
+
+  <form (ngSubmit)="onSubmit()" #form="ngForm" class="mt-4">
+    <div class="mb-3">
+      <label class="form-label">ID do Cliente</label>
+      <input type="number" class="form-control" name="clientId" [(ngModel)]="formData.clientId" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">ID do Fornecedor</label>
+      <input type="number" class="form-control" name="supplierId" [(ngModel)]="formData.supplierId" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Local de Retirada</label>
+      <input type="text" class="form-control" name="pickup" [(ngModel)]="formData.pickup" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Local de Entrega</label>
+      <input type="text" class="form-control" name="destination" [(ngModel)]="formData.destination" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Destinatário</label>
+      <input type="text" class="form-control" name="recipient" [(ngModel)]="formData.recipient" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Tipo de Serviço</label>
+      <input type="text" class="form-control" name="serviceType" [(ngModel)]="formData.serviceType" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+      Solicitar Entrega
+    </button>
+  </form>
+</div>

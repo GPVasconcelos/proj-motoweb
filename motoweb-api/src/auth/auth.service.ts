@@ -73,12 +73,12 @@ export class AuthService {
       throw new UnauthorizedException('Email ou senha inválidos');
     }
 
-    return this.generateToken(user.id, user.email);
+    return this.generateToken(user.id, user.email, user.profileType);
   }
 
   //Gerar Token
-  private generateToken(userId: number, email: string) {
-    const payload = { sub: userId, email };
+  private generateToken(userId: number, email: string, profileType: string) {
+    const payload = { sub: userId, email, profileType };
     return {
       accessToken: this.jwtService.sign(payload),
     };
