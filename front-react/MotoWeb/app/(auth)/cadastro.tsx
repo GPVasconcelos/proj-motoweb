@@ -36,7 +36,7 @@ export default function Cadastro() {
     try {
       await api.post("/usuarios", data);
       Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-      router.replace("/(auth)/login"); 
+      router.replace("/(auth)/login");
     } catch (err) {
       console.error(err);
       Alert.alert("Erro", "Não foi possível cadastrar. Verifique os dados.");
