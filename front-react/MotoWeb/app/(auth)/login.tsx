@@ -83,6 +83,14 @@ export default function Login() {
       {errors.senha && <Text style={styles.error}>{errors.senha.message}</Text>}
 
       <Button title="Entrar" onPress={handleSubmit(onSubmit)} />
+
+      <View style={{ marginTop: 12 }}>
+        <Button
+          title="Cadastrar-se"
+          onPress={() => router.push("/cadastro")}
+          color="#4CAF50"
+        />
+      </View>
     </View>
   );
 }
