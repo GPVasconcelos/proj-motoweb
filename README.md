@@ -54,7 +54,7 @@ npm install
 2. Configure a variável de ambiente `.env`:
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/motoweb"
-JWT_SECRET=mystrongsecretkey123
+JWT_SECRET="sua senha"
 ```
 
 ### 🔄 Execute as migrations Prisma:
