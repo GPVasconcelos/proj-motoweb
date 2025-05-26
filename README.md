@@ -166,6 +166,6 @@ Sinta-se livre para abrir issues ou enviar pull requests.
 
 ## 🔗 Contato
 
-Desenvolvido por **Guilherme Poit Vasconcelos** — [GitHub](https://github.com/GPVasconcelos)
-Desenvolvido por **Gustavo Oliveira** — [GitHub](https://github.com/Gholiveira6)
+- Desenvolvido por **Guilherme Poit Vasconcelos** — [GitHub](https://github.com/GPVasconcelos)
+- Desenvolvido por **Gustavo Oliveira** — [GitHub](https://github.com/Gholiveira6)
 
