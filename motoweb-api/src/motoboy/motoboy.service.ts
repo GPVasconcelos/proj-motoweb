@@ -190,4 +190,16 @@ export class MotoboyService {
       data: { status },
     });
   }
+  async findByUserId(userId: number) {
+  const motoboy = await this.prisma.motoboy.findUnique({
+    where: { userId: Number(userId) },
+  });
+
+  if (!motoboy) {
+    throw new NotFoundException('Motoboy não encontrado');
+  }
+
+  return motoboy;
+}
+
 }
