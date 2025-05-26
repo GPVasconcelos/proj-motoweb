@@ -91,4 +91,10 @@ export class MotoboyController {
       status,
     );
   }
+
+  @Get('user/:userId')
+async findByUserId(@Param('userId') userId: number) {
+  return this.motoboyService.findByUserId(userId);
+}
+
 }
