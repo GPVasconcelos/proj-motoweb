@@ -1,114 +1,171 @@
-🛵 MotoWeb
-Plataforma para gerenciamento de entregas por motoboy, com painel mobile desenvolvido em React Native (Expo) e API em Node.js (NestJS).
 
-📦 Estrutura do Projeto
-bash
-Copiar
-Editar
-proj-motoweb/
-├── motoweb-api/         # Back-end (NestJS)
-└── front-react/         # Front-end mobile (Expo Router + React Native)
-🚀 Tecnologias
-Back-end (motoweb-api)
-Node.js
+# 🚀 MotoWeb — Plataforma de Gestão de Entregas
 
-NestJS
+O **MotoWeb** é uma plataforma desenvolvida para conectar empresas de logística, clientes e motoboys, oferecendo uma solução eficiente para gestão de entregas. A aplicação é **multiplataforma**, composta por:
 
-TypeORM
+- 🖥️ **Frontend Web (Angular)** — Interface para Cliente e Central.
+- 📱 **Aplicativo Mobile (React Native + Expo)** — Interface para Motoboy.
+- 🔗 **API Backend (NestJS + Prisma)** — Gerenciamento dos dados e integrações.
 
-PostgreSQL
+## 🗂️ Estrutura dos Repositórios
 
-JWT Authentication
+```
+/motoweb-api      → Backend (NestJS + Prisma)
+/motoweb-web      → Frontend (Angular)
+/motoweb-app      → Mobile (React Native + Expo)
+```
 
-Front-end (front-react)
-React Native com Expo
+## 🧠 Tecnologias Utilizadas
 
-Expo Router (navegação por rotas de arquivos)
+- **Backend:** NestJS + Prisma + PostgreSQL
+- **Frontend Web:** Angular + Typescript
+- **Mobile:** React Native + Expo + Typescript
+- **Outros:** Axios, AsyncStorage, JWT, Expo Router
 
-Axios
+## 🔥 Clonando o Projeto
 
-TypeScript
-
-🔧 Instalação
-Pré-requisitos
-Node.js v18+
-
-Expo CLI (npm install -g expo-cli)
-
-PostgreSQL
-
-Yarn ou npm
-
-📁 Clone o repositório
-bash
-Copiar
-Editar
+1️⃣ Clone o repositório:
+```bash
 git clone https://github.com/GPVasconcelos/proj-motoweb.git
-cd proj-motoweb
-🔙 Back-end – motoweb-api
-bash
-Copiar
-Editar
+cd motoweb
+```
+
+2️⃣ Acesse as pastas individualmente para configurar cada ambiente:
+- `motoweb-api`
+- `motoweb-web`
+- `motoweb-app`
+
+## 🛠️ Configuração do Backend — API NestJS
+
+### 📍 Acesse a pasta:
+```bash
 cd motoweb-api
+```
+
+### 📦 Instale as dependências:
+```bash
 npm install
-# ou yarn install
+```
 
-# Configure o banco em .env
-cp .env.example .env
+### 🗄️ Configure o banco de dados:
 
-# Rode as migrations
-npm run typeorm migration:run
+1. Crie um banco PostgreSQL local ou em nuvem.
 
-# Inicie o servidor
+2. Configure a variável de ambiente `.env`:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/motoweb"
+JWT_SECRET=mystrongsecretkey123
+```
+
+### 🔄 Execute as migrations Prisma:
+```bash
+npx prisma migrate dev --name init
+```
+
+### 🚀 Execute a API:
+```bash
 npm run start:dev
-A API ficará disponível em http://localhost:3001
+```
 
-📱 Front-end – front-react
-bash
-Copiar
-Editar
-cd ../front-react
+> API estará disponível em:  
+`http://localhost:3000`
+
+## 🌐 Configuração do Frontend Web — Angular
+
+### 📍 Acesse a pasta:
+```bash
+cd motoweb-web
+```
+
+### 📦 Instale as dependências:
+```bash
 npm install
-# ou yarn install
+```
 
-# Inicie o app
+### 🔗 Configure o ambiente:
+
+Edite o arquivo:
+```bash
+src/app/core/service/api.service.ts
+```
+Exemplo:
+```ts
+export class ApiService {
+  private api: AxiosInstance;
+
+  constructor() {
+    this.api = axios.create({
+      baseURL: 'http://localhost:3000', // ← ajuste se necessário
+    });
+  }
+```
+
+### 🚀 Rode o projeto:
+```bash
+ng serve
+```
+
+> Acesse no navegador:  
+`http://localhost:4200`
+
+## 📱 Configuração do Mobile — React Native com Expo
+
+### 📍 Acesse a pasta:
+```bash
+cd motoweb-app
+```
+
+### 📦 Instale as dependências:
+```bash
+npm install
+```
+
+### 🔗 Configure o backend da API:
+
+No arquivo:
+```ts
+/src/services/api.ts
+```
+Configure o IP local:
+```ts
+const api = axios.create({
+  baseURL: 'http://SEU_IP_LOCAL:3000',  // ← Troque pelo IP da sua máquina na rede
+});
+```
+> ⚠️ O **localhost** não funciona no dispositivo físico.  
+Use o IP da rede local.
+
+### 🚀 Execute o projeto:
+```bash
 npx expo start
-Abra o app no emulador, navegador ou celular com o app Expo Go.
+```
 
-📚 Funcionalidades
- Cadastro e listagem de usuários
+- Escaneie o QR Code usando o app **Expo Go** no celular  
+ou  
+- Rode no emulador Android/iOS.
 
- Visualização de entregas e detalhes
+## ✅ Funcionalidades Implementadas
 
- Design responsivo e navegação fluída
+- 🔐 Login e autenticação via JWT.
+- 🚚 Gerenciamento de entregas.
+- 🔄 Atualização de status das entregas.
+- 🛵 Gerenciamento de veículos.
+- 🗂️ Interface web para Centrais e Clientes.
+- 📱 Interface mobile para Motoboys.
 
- Tela de login (em construção)
+## 💡 Considerações Finais
 
- Dashboard de entregas
+- ✔️ Projeto desenvolvido com foco em aprendizado acadêmico.
+- ✔️ Arquitetura organizada, seguindo boas práticas.
+- ✔️ Permite expansão futura.
 
-🗂️ Estrutura de pastas (front)
-bash
-Copiar
-Editar
-front-react/
-├── app/                # Páginas e rotas com Expo Router
-│   ├── index.tsx       # Página inicial
-│   ├── usuarios/
-│   │   ├── index.tsx   # Lista de usuários
-│   │   └── [id].tsx    # Detalhes de usuário
-├── components/         # Componentes reutilizáveis
-├── constants/          # Configuração da API
-├── ...
-🧪 Rotas da API (exemplo)
-bash
-Copiar
-Editar
-GET    /usuarios
-GET    /usuarios/:id
-POST   /usuarios
-GET    /entregas
-POST   /entregas
-👥 Contribuidores
-@GPVasconcelos
+## 🤝 Colaboração
 
-@Gholiveira6
+Contribuições são bem-vindas!  
+Sinta-se livre para abrir issues ou enviar pull requests.
+
+## 🔗 Contato
+
+Desenvolvido por **Guilherme Poit Vasconcelos** — [GitHub](https://github.com/GPVasconcelos)
+Desenvolvido por **Gustavo Oliveira** — [GitHub](https://github.com/Gholiveira6)
+
