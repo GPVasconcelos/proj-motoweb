@@ -27,7 +27,7 @@ O **MotoWeb** é uma plataforma desenvolvida para conectar empresas de logístic
 1️⃣ Clone o repositório:
 ```bash
 git clone https://github.com/GPVasconcelos/proj-motoweb.git
-cd motoweb
+cd proj-motoweb
 ```
 
 2️⃣ Acesse as pastas individualmente para configurar cada ambiente:
