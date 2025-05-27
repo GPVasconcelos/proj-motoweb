@@ -93,7 +93,7 @@ export class MotoboyController {
   }
 
   @Get('user/:userId')
-async findByUserId(@Param('userId') userId: number) {
+  findByUserId(@Param('userId') userId: number) {
   return this.motoboyService.findByUserId(userId);
 }
 
