@@ -116,7 +116,6 @@ export default function Veiculos() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>Gerenciar Veículos</Text>
 
           <View style={styles.form}>
@@ -138,7 +137,7 @@ export default function Veiculos() {
             renderItem={renderItem}
             ListEmptyComponent={<Text style={styles.empty}>Nenhum veículo cadastrado.</Text>}
           />
-        </ScrollView>
+        
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

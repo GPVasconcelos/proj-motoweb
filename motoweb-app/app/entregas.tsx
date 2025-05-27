@@ -66,51 +66,51 @@ export default function Entregas() {
     }
   };
 
-  const renderItem = ({ item }: { item: Delivery }) => (
-    <View style={styles.card}>
-      <Text style={styles.cardTitle}>Entrega #{item.id}</Text>
+const renderItem = ({ item }: { item: Delivery }) => (
+  <View style={styles.card}>
+    <Text style={styles.cardTitle}>Entrega #{item.id}</Text>
 
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Retirada:</Text>
-        <Text style={styles.value}>{item.pickup}</Text>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Destino:</Text>
-        <Text style={styles.value}>{item.destination}</Text>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Destinatário:</Text>
-        <Text style={styles.value}>{item.recipient}</Text>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Status:</Text>
-        <Text style={[styles.status, statusColor(item.status)]}>{item.status}</Text>
-      </View>
-
-      <View style={styles.buttons}>
-        {item.status === "PENDING" && (
-          <TouchableOpacity
-            style={styles.buttonPrimary}
-            onPress={() => updateStatus(item.id, "IN_PROGRESS")}
-          >
-            <Text style={styles.buttonText}>Iniciar Entrega</Text>
-          </TouchableOpacity>
-        )}
-
-        {item.status === "IN_PROGRESS" && (
-          <TouchableOpacity
-            style={styles.buttonSuccess}
-            onPress={() => updateStatus(item.id, "COMPLETED")}
-          >
-            <Text style={styles.buttonText}>Finalizar Entrega</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+    <View style={styles.infoContainer}>
+      <Text style={styles.label}>Retirada:</Text>
+      <Text style={styles.value}>{item.pickup}</Text>
     </View>
-  );
+
+    <View style={styles.infoContainer}>
+      <Text style={styles.label}>Destino:</Text>
+      <Text style={styles.value}>{item.destination}</Text>
+    </View>
+
+    <View style={styles.infoContainer}>
+      <Text style={styles.label}>Destinatário:</Text>
+      <Text style={styles.value}>{item.recipient}</Text>
+    </View>
+
+    <View style={styles.infoContainer}>
+      <Text style={styles.label}>Status:</Text>
+      <Text style={[styles.status, statusColor(item.status)]}>{item.status}</Text>
+    </View>
+
+    <View style={styles.buttons}>
+      {item.status === "PENDING" && (
+        <TouchableOpacity
+          style={styles.buttonPrimary}
+          onPress={() => updateStatus(item.id, "IN_PROGRESS")}
+        >
+          <Text style={styles.buttonText}>Aceitar Entrega</Text>
+        </TouchableOpacity>
+      )}
+
+      {item.status === "IN_PROGRESS" && (
+        <TouchableOpacity
+          style={styles.buttonSuccess}
+          onPress={() => updateStatus(item.id, "COMPLETED")}
+        >
+          <Text style={styles.buttonText}>Finalizar Entrega</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  </View>
+);
 
   if (loading) {
     return (
