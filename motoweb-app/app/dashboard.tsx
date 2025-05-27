@@ -14,8 +14,7 @@ export default function Dashboard() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <Text style={styles.title}>Olá, {user?.name || "Motoboy"}</Text>
-      <Text style={styles.subtitle}>O que deseja fazer hoje?</Text>
+      <Text style={styles.title}>Olá, {user?.name}</Text>
 
       <TouchableOpacity
         style={styles.card}
