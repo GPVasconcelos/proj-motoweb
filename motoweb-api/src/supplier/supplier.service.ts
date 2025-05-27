@@ -107,7 +107,6 @@ export class SupplierService {
       where: { id: deliveryId },
       data: {
         motoboyId,
-        status: DeliveryStatus.IN_PROGRESS,
       },
     });
   }
