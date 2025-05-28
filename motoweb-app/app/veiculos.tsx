@@ -1,6 +1,18 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
-import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
 import api from "../src/services/api";
 import { useAuth } from "../src/contexts/AuthContext";
 
@@ -111,77 +123,162 @@ export default function Veiculos() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
-          <Text style={styles.title}>Gerenciar Veículos</Text>
+        <Text style={styles.title}>Gerenciar Veículos</Text>
 
-          <View style={styles.form}>
-            <TextInput placeholder="Modelo" style={styles.input} value={model} onChangeText={setModel} />
-            <TextInput placeholder="Cor" style={styles.input} value={color} onChangeText={setColor} />
-            <TextInput placeholder="Tipo (Ex.: Motocicleta)" style={styles.input} value={type} onChangeText={setType} />
-            <TextInput placeholder="Renavam" style={styles.input} value={renavam} onChangeText={setRenavam} />
-            <TextInput placeholder="Ano" style={styles.input} keyboardType="numeric" value={year} onChangeText={setYear} />
-            <TextInput placeholder="Placa" style={styles.input} value={plate} onChangeText={setPlate} />
-
-            <TouchableOpacity style={styles.addButton} onPress={handleRegister}>
-              <Text style={styles.addButtonText}>Cadastrar</Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            data={vehicles}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderItem}
-            ListEmptyComponent={<Text style={styles.empty}>Nenhum veículo cadastrado.</Text>}
+        <View style={styles.form}>
+          <TextInput
+            placeholder="Modelo"
+            style={styles.input}
+            value={model}
+            onChangeText={setModel}
           />
-        
+          <TextInput
+            placeholder="Cor"
+            style={styles.input}
+            value={color}
+            onChangeText={setColor}
+          />
+          <TextInput
+            placeholder="Tipo (Ex.: Motocicleta)"
+            style={styles.input}
+            value={type}
+            onChangeText={setType}
+          />
+          <TextInput
+            placeholder="Renavam"
+            style={styles.input}
+            value={renavam}
+            onChangeText={setRenavam}
+          />
+          <TextInput
+            placeholder="Ano"
+            style={styles.input}
+            keyboardType="numeric"
+            value={year}
+            onChangeText={setYear}
+          />
+          <TextInput
+            placeholder="Placa"
+            style={styles.input}
+            value={plate}
+            onChangeText={setPlate}
+          />
+
+          <TouchableOpacity style={styles.addButton} onPress={handleRegister}>
+            <Text style={styles.addButtonText}>Cadastrar</Text>
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={vehicles}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          ListEmptyComponent={
+            <Text style={styles.empty}>Nenhum veículo cadastrado.</Text>
+          }
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9F9F9", padding: 20 },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 16 },
+  container: {
+    flex: 1,
+    backgroundColor: "#F2F2F7",
+    paddingHorizontal: 20,
+    paddingTop: 12,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#1C1C1E",
+    marginBottom: 20,
+  },
 
-  form: { marginBottom: 20 },
+  form: {
+    marginBottom: 24,
+    backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 14,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
+  },
   input: {
-    borderWidth: 1, borderColor: "#ccc", borderRadius: 8,
-    padding: 10, marginBottom: 10, backgroundColor: "#fff"
+    borderWidth: 1,
+    borderColor: "#D1D1D6",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 10,
+    backgroundColor: "#fff",
+    fontSize: 16,
+    color: "#333",
   },
   addButton: {
     backgroundColor: "#007AFF",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center"
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 8,
   },
-  addButtonText: { color: "#fff", fontWeight: "bold" },
+  addButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    elevation: 3,
+    borderRadius: 14,
+    marginBottom: 14,
     shadowColor: "#000",
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
+    elevation: 2,
   },
-  cardTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 4 },
-  cardDetail: { color: "#666" },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#007AFF",
+    marginBottom: 6,
+  },
+  cardDetail: {
+    fontSize: 14,
+    color: "#444",
+    marginBottom: 2,
+  },
 
   deleteButton: {
-    backgroundColor: "red",
-    padding: 8,
+    backgroundColor: "#FF3B30",
+    paddingVertical: 10,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 10
+    marginTop: 12,
   },
-  deleteText: { color: "#fff", fontWeight: "bold" },
+  deleteText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
 
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  empty: { textAlign: "center", color: "#888", marginTop: 20 },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  empty: {
+    textAlign: "center",
+    color: "#8E8E93",
+    marginTop: 24,
+    fontSize: 16,
+  },
 });

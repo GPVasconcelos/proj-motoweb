@@ -7,20 +7,26 @@
     "icon": "./assets/images/icon.png",
     "scheme": "motoweb-app",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.seunome.motowebapp",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Precisamos da câmera para escanear códigos.",
+        "NSLocationWhenInUseUsageDescription": "Precisamos da localização para identificar entregas.",
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "package": "com.seunome.motowebapp",
+      "permissions": []
     },
     "web": {
-      "bundler": "metro",
-      "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
@@ -29,7 +35,6 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
