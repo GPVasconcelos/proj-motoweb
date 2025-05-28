@@ -119,8 +119,30 @@ export default function Entregas() {
           </TouchableOpacity>
         )}
       </View>
+
     </View>
-  );
+
+    <View style={styles.buttons}>
+      {item.status === "PENDING" && (
+        <TouchableOpacity
+          style={styles.buttonPrimary}
+          onPress={() => updateStatus(item.id, "IN_PROGRESS")}
+        >
+          <Text style={styles.buttonText}>Aceitar Entrega</Text>
+        </TouchableOpacity>
+      )}
+
+      {item.status === "IN_PROGRESS" && (
+        <TouchableOpacity
+          style={styles.buttonSuccess}
+          onPress={() => updateStatus(item.id, "COMPLETED")}
+        >
+          <Text style={styles.buttonText}>Finalizar Entrega</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  </View>
+);
 
   if (loading) {
     return (
