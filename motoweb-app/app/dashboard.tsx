@@ -1,4 +1,4 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../src/contexts/AuthContext";
@@ -13,7 +13,7 @@ export default function Dashboard() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <Text style={styles.title}>Olá, {user?.name}</Text>
 
       <TouchableOpacity
@@ -40,29 +40,52 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9F9F9", padding: 20 },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 8 },
-  subtitle: { fontSize: 16, color: "#555", marginBottom: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: "#F2F2F7",
+    paddingHorizontal: 20,
+    paddingTop: 12,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#1C1C1E",
+    marginBottom: 24,
+  },
 
   card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 3,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 18,
     shadowColor: "#000",
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
+    elevation: 3,
   },
-  cardTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 4 },
-  cardDesc: { color: "#666" },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#007AFF",
+    marginBottom: 6,
+  },
+  cardDesc: {
+    fontSize: 14,
+    color: "#555",
+  },
 
   logoutButton: {
     backgroundColor: "#FF3B30",
-    padding: 12,
-    borderRadius: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: "auto",
+    marginBottom: 12,
   },
-  logoutText: { color: "#fff", fontWeight: "bold" },
+  logoutText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 });
