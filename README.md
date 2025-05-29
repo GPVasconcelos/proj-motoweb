@@ -159,12 +159,7 @@ ou
 - ✔️ Arquitetura organizada, seguindo boas práticas.
 - ✔️ Permite expansão futura.
 
-## 🤝 Colaboração
-
-Contribuições são bem-vindas!  
-Sinta-se livre para abrir issues ou enviar pull requests.
-
-## 🔗 Contato
+## 🔗 Colaboradores
 
 - Desenvolvido por **Guilherme Poit Vasconcelos** — [GitHub](https://github.com/GPVasconcelos)
 - Desenvolvido por **Gustavo Oliveira** — [GitHub](https://github.com/Gholiveira6)
