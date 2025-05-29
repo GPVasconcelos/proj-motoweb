@@ -3,6 +3,7 @@ import { SupplierService } from '../supplier/supplier.service';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { DeliveryStatus } from '@prisma/client';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
+import { ParseIntPipe } from '@nestjs/common/pipes/parse-int.pipe';
 
 @Controller('supplier')
 export class SupplierController {
@@ -40,6 +41,12 @@ export class SupplierController {
   async getSupplierById(@Param('id') id: string) {
     return this.supplierService.getSupplierById(parseInt(id));
   }
+
+  //Visualizar Entregas
+  @Get(':userId/delivery')
+  findDeliveriesBySupplier(@Param('userId', ParseIntPipe) userId: number) {
+  return this.supplierService.getDeliveryBySupplier(userId);
+}
 
   //Visualizar Entregas Pendentes
   @Get(':id/delivery/pending')

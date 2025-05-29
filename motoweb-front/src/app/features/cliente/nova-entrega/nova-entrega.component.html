@@ -2,14 +2,15 @@
   <h2>Solicitar Nova Entrega</h2>
 
   <form (ngSubmit)="onSubmit()" #form="ngForm" class="mt-4">
-    <div class="mb-3">
-      <label class="form-label">ID do Cliente</label>
-      <input type="number" class="form-control" name="clientId" [(ngModel)]="formData.clientId" required>
-    </div>
 
     <div class="mb-3">
-      <label class="form-label">ID do Fornecedor</label>
-      <input type="number" class="form-control" name="supplierId" [(ngModel)]="formData.supplierId" required>
+      <label class="form-label">Central (Fornecedor)</label>
+      <select class="form-control" name="supplierId" [(ngModel)]="formData.supplierId" required>
+        <option value="">Selecione uma central</option>
+        <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+          {{ supplier.fantasyName }} (ID: {{ supplier.id }})
+        </option>
+      </select>
     </div>
 
     <div class="mb-3">

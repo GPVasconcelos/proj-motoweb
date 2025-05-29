@@ -1,14 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DashboardSupplierComponent } from './dashboard/dashboard.component';
+import { EntregasComponent } from './entregas/entregas.component';
+import { RouterModule } from '@angular/router';
 
-import { SupplierRoutingModule } from './supplier-routing.module';
 
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    SupplierRoutingModule
+    DashboardSupplierComponent,
+    EntregasComponent,
+    RouterModule
   ]
 })
 export class SupplierModule { }
+ 

@@ -16,11 +16,6 @@ export class DashboardComponent {
     private router: Router
   ) {}
 
-  /**
-   * Método responsável por realizar o logout do usuário.
-   * - Remove o token salvo no localStorage.
-   * - Redireciona o usuário para a tela de login.
-   */
   logout(): void {
     // Executa o logout via serviço de autenticação
     this.authService.logout();

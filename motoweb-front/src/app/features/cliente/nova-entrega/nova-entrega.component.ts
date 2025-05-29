@@ -1,51 +1,85 @@
-import { Component } from '@angular/core';
-import { DeliveryService } from '../../../core/service/delivery.service';
-import { AuthService } from '../../../core/service/auth.service';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
+
 
 @Component({
   selector: 'app-nova-entrega',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './nova-entrega.component.html',
+  styleUrls: ['./nova-entrega.component.css']
 })
-export class NovaEntregaComponent {
+export class NovaEntregaComponent implements OnInit {
 
-  // Objeto que armazena os dados do formulário
+  clientId: number = 0;
+  suppliers: any[] = [];
+
   formData = {
-    clientId: 0,
     supplierId: 0,
     pickup: '',
     destination: '',
     recipient: '',
-    notes: '',
     serviceType: ''
   };
 
   constructor(
-    private deliveryService: DeliveryService,
-    private authService: AuthService,
+    private http: HttpClient,
     private router: Router
   ) {}
 
-  /**
-   * Método executado quando o usuário envia o formulário.
-   * Envia os dados para a API, cria a entrega e redireciona.
-   */
-  onSubmit(): void {
-    const user = this.authService.getUserProfile();
-    const clientId = user.sub;
+  ngOnInit(): void {
+    this.decodeToken();
+    this.loadSuppliers();
+  }
 
-    this.deliveryService.createDelivery(clientId, this.formData).subscribe({
+  // Captura o clientId do token JWT
+decodeToken() {
+  const token = localStorage.getItem('token');
+  if (token) {
+    const decoded: any = jwtDecode(token);
+    this.clientId = decoded.sub;
+  } else {
+    console.error('Token não encontrado.');
+  }
+}
+
+  // Carrega as centrais (suppliers) para o select
+  loadSuppliers() {
+    this.http.get<any[]>('http://localhost:3000/supplier').subscribe({
+      next: (res) => {
+        this.suppliers = res;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar fornecedores:', err);
+      }
+    });
+  }
+
+  // Envia a solicitação de entrega
+  onSubmit(): void {
+    this.decodeToken();
+    this.loadSuppliers();
+    const payload = {
+      supplierId: Number(this.formData.supplierId),
+      pickup: this.formData.pickup,
+      destination: this.formData.destination,
+      recipient: this.formData.recipient,
+      serviceType: this.formData.serviceType
+    };
+
+    this.http.post(`http://localhost:3000/client/${this.clientId}/delivery`, payload).subscribe({
       next: () => {
         alert('Entrega solicitada com sucesso!');
         this.router.navigate(['/cliente/minhas-entregas']);
       },
       error: (err) => {
         console.error('Erro ao criar entrega:', err);
-        alert('Ocorreu um erro ao solicitar a entrega. Tente novamente.');
+        alert('Erro ao solicitar entrega. Verifique os dados e tente novamente.');
       }
     });
   }
