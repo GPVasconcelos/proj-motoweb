@@ -23,7 +23,9 @@ export class SupplierService {
   }
 
   //Cadastrar uma Central Fornecedora
-  async createSupplier(createSupplierDto: CreateSupplierDto): Promise<SupplierEntity> {
+  async createSupplier(
+    createSupplierDto: CreateSupplierDto,
+  ): Promise<SupplierEntity> {
     const supplier = await this.prisma.supplier.create({
       data: {
         userId: createSupplierDto.userId,
@@ -37,8 +39,13 @@ export class SupplierService {
   }
 
   //Atualizar Central Fornecedora
-  async updateSupplier(supplierId: number, updateSupplierDto: UpdateSupplierDto): Promise<SupplierEntity> {
-    const supplier = await this.prisma.supplier.findUnique({ where: { id: supplierId } });
+  async updateSupplier(
+    supplierId: number,
+    updateSupplierDto: UpdateSupplierDto,
+  ): Promise<SupplierEntity> {
+    const supplier = await this.prisma.supplier.findUnique({
+      where: { id: supplierId },
+    });
 
     if (!supplier) {
       throw new NotFoundException('Central Fornecedora não encontrada');
@@ -59,7 +66,9 @@ export class SupplierService {
 
   //Remover Central Fornecedora
   async deleteSupplier(supplierId: number) {
-    const supplier = await this.prisma.supplier.findUnique({ where: { id: supplierId } });
+    const supplier = await this.prisma.supplier.findUnique({
+      where: { id: supplierId },
+    });
 
     if (!supplier) {
       throw new NotFoundException('Central Fornecedora não encontrada');
@@ -70,7 +79,9 @@ export class SupplierService {
 
   // Obter Central Fornecedora por ID
   async getSupplierById(supplierId: number) {
-    const supplier = await this.prisma.supplier.findUnique({ where: { id: supplierId } });
+    const supplier = await this.prisma.supplier.findUnique({
+      where: { id: supplierId },
+    });
 
     if (!supplier) {
       throw new NotFoundException('Central Fornecedora não encontrada');
@@ -123,7 +134,9 @@ export class SupplierService {
 
   // Atribuir Motoboy a uma Entrega
   async assignMotoboy(deliveryId: number, motoboyId: number) {
-    const delivery = await this.prisma.delivery.findUnique({ where: { id: deliveryId } });
+    const delivery = await this.prisma.delivery.findUnique({
+      where: { id: deliveryId },
+    });
 
     if (!delivery) {
       throw new NotFoundException('Entrega não encontrada');
@@ -139,7 +152,9 @@ export class SupplierService {
 
   // Cancelar Entrega
   async cancelDelivery(deliveryId: number) {
-    const delivery = await this.prisma.delivery.findUnique({ where: { id: deliveryId } });
+    const delivery = await this.prisma.delivery.findUnique({
+      where: { id: deliveryId },
+    });
 
     if (!delivery) {
       throw new NotFoundException('Entrega não encontrada');
@@ -159,7 +174,7 @@ export class SupplierService {
         status,
       },
     });
-  } 
+  }
 
   // Histórico de Entregas
   async getDeliveryHistory(supplierId: number) {

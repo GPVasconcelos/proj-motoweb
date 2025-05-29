@@ -1,6 +1,15 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import api from "../src/services/api";
 import { useAuth } from "../src/contexts/AuthContext";
 
@@ -66,51 +75,65 @@ export default function Entregas() {
     }
   };
 
-const renderItem = ({ item }: { item: Delivery }) => (
-  <View style={styles.card}>
-    <Text style={styles.cardTitle}>Entrega #{item.id}</Text>
+  const renderItem = ({ item }: { item: Delivery }) => (
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>Entrega #{item.id}</Text>
 
-    <View style={styles.infoContainer}>
-      <Text style={styles.label}>Retirada:</Text>
-      <Text style={styles.value}>{item.pickup}</Text>
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>Retirada:</Text>
+        <Text style={styles.value}>{item.pickup}</Text>
+      </View>
+
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>Destino:</Text>
+        <Text style={styles.value}>{item.destination}</Text>
+      </View>
+
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>Destinatário:</Text>
+        <Text style={styles.value}>{item.recipient}</Text>
+      </View>
+
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>Status:</Text>
+        <Text style={[styles.status, statusColor(item.status)]}>
+          {item.status}
+        </Text>
+      </View>
+
+      <View style={styles.buttons}>
+        {item.status === "PENDING" && (
+          <>
+            <TouchableOpacity
+              style={styles.buttonPrimary}
+              onPress={() => updateStatus(item.id, "IN_PROGRESS")}
+            >
+              <FontAwesome name="check" size={18} color="#fff" />
+              <Text style={styles.buttonText}>Aceitar Entrega</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.buttonDanger}
+              onPress={() => updateStatus(item.id, "CANCELED")}
+            >
+              <MaterialIcons name="cancel" size={20} color="#fff" />
+              <Text style={styles.buttonText}>Recusar Entrega</Text>
+            </TouchableOpacity>
+          </>
+        )}
+
+        {item.status === "IN_PROGRESS" && (
+          <TouchableOpacity
+            style={styles.buttonSuccess}
+            onPress={() => updateStatus(item.id, "COMPLETED")}
+          >
+            <FontAwesome name="check-circle" size={20} color="#fff" />
+            <Text style={styles.buttonText}>Finalizar Entrega</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
-
-    <View style={styles.infoContainer}>
-      <Text style={styles.label}>Destino:</Text>
-      <Text style={styles.value}>{item.destination}</Text>
-    </View>
-
-    <View style={styles.infoContainer}>
-      <Text style={styles.label}>Destinatário:</Text>
-      <Text style={styles.value}>{item.recipient}</Text>
-    </View>
-
-    <View style={styles.infoContainer}>
-      <Text style={styles.label}>Status:</Text>
-      <Text style={[styles.status, statusColor(item.status)]}>{item.status}</Text>
-    </View>
-
-    <View style={styles.buttons}>
-      {item.status === "PENDING" && (
-        <TouchableOpacity
-          style={styles.buttonPrimary}
-          onPress={() => updateStatus(item.id, "IN_PROGRESS")}
-        >
-          <Text style={styles.buttonText}>Aceitar Entrega</Text>
-        </TouchableOpacity>
-      )}
-
-      {item.status === "IN_PROGRESS" && (
-        <TouchableOpacity
-          style={styles.buttonSuccess}
-          onPress={() => updateStatus(item.id, "COMPLETED")}
-        >
-          <Text style={styles.buttonText}>Finalizar Entrega</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  </View>
-);
+  );
 
   if (loading) {
     return (
@@ -138,42 +161,99 @@ const renderItem = ({ item }: { item: Delivery }) => (
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9F9F9", padding: 20 },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 16 },
-
-  card: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+  container: {
+    flex: 1,
+    backgroundColor: "#F2F2F7",
+    paddingHorizontal: 20,
+    paddingTop: 12,
   },
-  cardTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
-
-  infoContainer: { flexDirection: "row", marginBottom: 4 },
-  label: { fontWeight: "600", width: 100 },
-  value: { flex: 1, color: "#555" },
-
-  status: { fontWeight: "bold" },
-
-  buttons: { marginTop: 12, gap: 8 },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#1C1C1E",
+    marginBottom: 16,
+  },
+  card: {
+    backgroundColor: "#FFFFFF",
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 14,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#007AFF",
+  },
+  infoContainer: {
+    flexDirection: "row",
+    marginBottom: 6,
+  },
+  label: {
+    fontWeight: "600",
+    width: 100,
+    color: "#333",
+  },
+  value: {
+    flex: 1,
+    color: "#555",
+  },
+  status: {
+    fontWeight: "bold",
+    textTransform: "capitalize",
+  },
+  buttons: {
+    marginTop: 14,
+    flexDirection: "column",
+    gap: 8,
+  },
   buttonPrimary: {
     backgroundColor: "#007AFF",
-    padding: 12,
-    borderRadius: 8,
+    paddingVertical: 12,
+    borderRadius: 10,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
   },
   buttonSuccess: {
-    backgroundColor: "green",
-    padding: 12,
-    borderRadius: 8,
+    backgroundColor: "#28A745",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+  },
+  buttonDanger: {
+    backgroundColor: "#FF3B30",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 6,
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
   },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  empty: { textAlign: "center", color: "#888", marginTop: 20 },
+  empty: {
+    textAlign: "center",
+    color: "#8E8E93",
+    marginTop: 24,
+    fontSize: 16,
+  },
 });

@@ -1,7 +1,16 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../src/contexts/AuthContext";
+
+const screenWidth = Dimensions.get("window").width;
 
 export default function Dashboard() {
   const { logout, user } = useAuth();
@@ -12,24 +21,42 @@ export default function Dashboard() {
     router.replace("/(auth)/login");
   };
 
+  console.log("Usuário logado:", user);
+
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <Text style={styles.title}>Olá, {user?.name}</Text>
 
       <TouchableOpacity
         style={styles.card}
         onPress={() => router.push("/entregas")}
       >
-        <Text style={styles.cardTitle}>Minhas Entregas</Text>
-        <Text style={styles.cardDesc}>Veja e atualize suas entregas</Text>
+        <Image
+          source={require("../assets/images/caixa.png")}
+          style={styles.cardImage}
+          resizeMode="contain"
+        />
+        <View style={styles.cardText}>
+          <Text style={styles.cardTitle}>Minhas Entregas</Text>
+          <Text style={styles.cardDesc}>Veja e atualize suas entregas</Text>
+        </View>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.card}
         onPress={() => router.push("/veiculos")}
       >
-        <Text style={styles.cardTitle}>Meus Veículos</Text>
-        <Text style={styles.cardDesc}>Gerencie seus veículos cadastrados</Text>
+        <Image
+          source={require("../assets/images/veiculos.png")}
+          style={styles.cardImage}
+          resizeMode="contain"
+        />
+        <View style={styles.cardText}>
+          <Text style={styles.cardTitle}>Meus Veículos</Text>
+          <Text style={styles.cardDesc}>
+            Gerencie seus veículos cadastrados
+          </Text>
+        </View>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -40,29 +67,60 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9F9F9", padding: 20 },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 8 },
-  subtitle: { fontSize: 16, color: "#555", marginBottom: 20 },
-
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+  container: {
+    flex: 1,
+    backgroundColor: "#F2F2F7",
+    paddingHorizontal: 20,
+    paddingTop: 12,
   },
-  cardTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 4 },
-  cardDesc: { color: "#666" },
-
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#1C1C1E",
+    marginBottom: 24,
+  },
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  cardImage: {
+    width: 64,
+    height: 64,
+    marginRight: 16,
+  },
+  cardText: {
+    flex: 1,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#007AFF",
+    marginBottom: 4,
+  },
+  cardDesc: {
+    fontSize: 14,
+    color: "#555",
+  },
   logoutButton: {
     backgroundColor: "#FF3B30",
-    padding: 12,
-    borderRadius: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: "auto",
+    marginBottom: 12,
   },
-  logoutText: { color: "#fff", fontWeight: "bold" },
+  logoutText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 });

@@ -13,7 +13,7 @@ export class MotoboyService {
   constructor(private readonly prisma: PrismaService) {}
 
   // Mapear para MotoboyEntity
-   private mapToMotoboyEntity(motoboy: any): MotoboyEntity {
+  private mapToMotoboyEntity(motoboy: any): MotoboyEntity {
     return {
       id: motoboy.id,
       userId: motoboy.userId,
@@ -29,7 +29,7 @@ export class MotoboyService {
   }
 
   // Mapear para VehicleEntity
-   private mapToVehicleEntity(vehicle: any): VehicleEntity {
+  private mapToVehicleEntity(vehicle: any): VehicleEntity {
     return {
       id: vehicle.id,
       model: vehicle.model,
@@ -43,7 +43,9 @@ export class MotoboyService {
   }
 
   //Cadastrar um Motoboy
-   async createMotoboy(createMotoboyDto: CreateMotoboyDto): Promise<MotoboyEntity> {
+  async createMotoboy(
+    createMotoboyDto: CreateMotoboyDto,
+  ): Promise<MotoboyEntity> {
     const motoboy = await this.prisma.motoboy.create({
       data: {
         userId: createMotoboyDto.userId,
@@ -66,8 +68,8 @@ export class MotoboyService {
 
   //Obter Motoboy por ID
   async getMotoboyById(id: number): Promise<MotoboyEntity> {
-    const motoboy = await this.prisma.motoboy.findUnique({ 
-      where: { id } 
+    const motoboy = await this.prisma.motoboy.findUnique({
+      where: { id },
     });
 
     if (!motoboy) {
@@ -78,7 +80,10 @@ export class MotoboyService {
   }
 
   //Atualizar Motoboy
-  async updateMotoboy(id: number, UpdateMotoboyDto: UpdateMotoboyDto): Promise<MotoboyEntity> {
+  async updateMotoboy(
+    id: number,
+    UpdateMotoboyDto: UpdateMotoboyDto,
+  ): Promise<MotoboyEntity> {
     const motoboy = await this.prisma.motoboy.findUnique({ where: { id } });
 
     if (!motoboy) {
@@ -94,7 +99,7 @@ export class MotoboyService {
         status: UpdateMotoboyDto.status,
         gender: UpdateMotoboyDto.gender,
         emergencyContact: UpdateMotoboyDto.emergencyContact,
-      }
+      },
     });
 
     return this.mapToMotoboyEntity(updatedMotoboy);
@@ -112,7 +117,10 @@ export class MotoboyService {
   }
 
   //Registrar um Veículo para o Motoboy
-  async createVehicle(motoboyId: number, data: CreateVehicleDto): Promise<VehicleEntity> {
+  async createVehicle(
+    motoboyId: number,
+    data: CreateVehicleDto,
+  ): Promise<VehicleEntity> {
     const vehicle = await this.prisma.vehicle.create({
       data: {
         model: data.model,
@@ -128,14 +136,20 @@ export class MotoboyService {
   }
 
   //Atualizar um Veículo do Motoboy
-  async updateVehicle(motoboyId: number, vehicleId: number, data: UpdateVehicleDto): Promise<VehicleEntity> {
+  async updateVehicle(
+    motoboyId: number,
+    vehicleId: number,
+    data: UpdateVehicleDto,
+  ): Promise<VehicleEntity> {
     const vehicle = await this.prisma.vehicle.findUnique({
       where: { id: vehicleId },
       select: { motoboyId: true },
     });
 
     if (!vehicle || vehicle.motoboyId !== motoboyId) {
-      throw new NotFoundException('Veículo não encontrado ou não pertence a este motoboy');
+      throw new NotFoundException(
+        'Veículo não encontrado ou não pertence a este motoboy',
+      );
     }
 
     const updated = await this.prisma.vehicle.update({
@@ -147,14 +161,16 @@ export class MotoboyService {
   }
 
   //Remover um Veículo do Motoboy
-   async deleteVehicle(motoboyId: number, vehicleId: number) {
+  async deleteVehicle(motoboyId: number, vehicleId: number) {
     const vehicle = await this.prisma.vehicle.findUnique({
       where: { id: vehicleId },
       select: { motoboyId: true },
     });
 
     if (!vehicle || vehicle.motoboyId !== motoboyId) {
-      throw new NotFoundException('Veículo não encontrado ou não pertence a este motoboy');
+      throw new NotFoundException(
+        'Veículo não encontrado ou não pertence a este motoboy',
+      );
     }
 
     return this.prisma.vehicle.delete({ where: { id: vehicleId } });
@@ -178,11 +194,19 @@ export class MotoboyService {
   }
 
   // Atualizar Status da Entrega (IN_PROGRESS, COMPLETED, CANCELED)
-  async updateDeliveryStatus(motoboyId: number, deliveryId: number, status: DeliveryStatus) {
-    const delivery = await this.prisma.delivery.findUnique({ where: { id: deliveryId } });
+  async updateDeliveryStatus(
+    motoboyId: number,
+    deliveryId: number,
+    status: DeliveryStatus,
+  ) {
+    const delivery = await this.prisma.delivery.findUnique({
+      where: { id: deliveryId },
+    });
 
     if (!delivery || delivery.motoboyId !== motoboyId) {
-      throw new NotFoundException('Entrega não encontrada ou não atribuída a este motoboy');
+      throw new NotFoundException(
+        'Entrega não encontrada ou não atribuída a este motoboy',
+      );
     }
 
     return this.prisma.delivery.update({
@@ -191,15 +215,14 @@ export class MotoboyService {
     });
   }
   async findByUserId(userId: number) {
-  const motoboy = await this.prisma.motoboy.findUnique({
-    where: { userId: Number(userId) },
-  });
+    const motoboy = await this.prisma.motoboy.findUnique({
+      where: { userId: Number(userId) },
+    });
 
-  if (!motoboy) {
-    throw new NotFoundException('Motoboy não encontrado');
+    if (!motoboy) {
+      throw new NotFoundException('Motoboy não encontrado');
+    }
+
+    return motoboy;
   }
-
-  return motoboy;
-}
-
 }

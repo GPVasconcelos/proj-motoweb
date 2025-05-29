@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../services/api";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 interface JwtPayload {
   sub: number;
@@ -48,15 +48,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const decoded: JwtPayload = jwtDecode(accessToken);
     const userId = decoded.sub;
 
-    const motoboyResponse = await api.get(`/motoboy/user/${userId}`);
-    const motoboyData = motoboyResponse.data;
-
-    const fullUser = {
+    let fullUser: any = {
       id: userId,
       email: decoded.email,
       profileType: decoded.profileType,
-      motoboyId: motoboyData.id,
     };
+
+    if (decoded.profileType === "MOTOBOY") {
+      const motoboyResponse = await api.get(`/motoboy/user/${userId}`);
+      const motoboyData = motoboyResponse.data;
+
+      fullUser = {
+        ...fullUser,
+        motoboyId: motoboyData.id,
+        name: motoboyData.name,
+      };
+    }
 
     await AsyncStorage.setItem("user", JSON.stringify(fullUser));
     setUser(fullUser);
