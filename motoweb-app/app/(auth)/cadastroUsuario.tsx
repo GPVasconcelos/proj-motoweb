@@ -7,8 +7,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { Feather } from "@expo/vector-icons";
 import api from "../../src/services/api";
 
 export default function CadastroUsuario() {
@@ -51,8 +53,6 @@ export default function CadastroUsuario() {
         profileType,
       });
 
-      console.log("Resposta da API:", response.data);
-
       const userId = response.data.id;
 
       if (!userId) {
@@ -65,7 +65,7 @@ export default function CadastroUsuario() {
       if (profileType === "MOTOBOY") {
         router.push({
           pathname: "/(auth)/cadastroMotoboy",
-          params: { userId, name }, 
+          params: { userId, name },
         });
       } else {
         Alert.alert(
@@ -81,80 +81,122 @@ export default function CadastroUsuario() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-      <Text style={styles.title}>Cadastro de Usuário</Text>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.title}>Cadastro de Usuário</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nome"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Telefone"
-        value={phone}
-        onChangeText={setPhone}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Endereço"
-        value={address}
-        onChangeText={setAddress}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirmar Senha"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Nome"
+          placeholderTextColor="#888"
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#888"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Telefone"
+          placeholderTextColor="#888"
+          value={phone}
+          onChangeText={setPhone}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Endereço"
+          placeholderTextColor="#888"
+          value={address}
+          onChangeText={setAddress}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          placeholderTextColor="#888"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirmar Senha"
+          placeholderTextColor="#888"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
 
-      <Text style={styles.label}>Tipo de Perfil:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="MOTOBOY"
-        value={profileType}
-        onChangeText={setProfileType}
-      />
+        <Text style={styles.label}>Tipo de Perfil</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="MOTOBOY"
+          placeholderTextColor="#888"
+          value={profileType}
+          onChangeText={setProfileType}
+        />
 
-      <TouchableOpacity style={styles.button} onPress={handleNext}>
-        <Text style={styles.buttonText}>Próximo</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleNext}>
+          <Text style={styles.buttonText}>Próximo</Text>
+          <Feather
+            name="arrow-right"
+            size={20}
+            color="#fff"
+            style={{ marginLeft: 8 }}
+          />
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#F9F9F9" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: "#F2F2F7",
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#1C1C1E",
+    marginBottom: 24,
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 14,
+    fontSize: 16,
     backgroundColor: "#fff",
   },
-  label: { fontWeight: "bold", marginBottom: 4 },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 6,
+    color: "#333",
+  },
   button: {
     backgroundColor: "#007AFF",
-    padding: 15,
-    borderRadius: 8,
+    flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
+    justifyContent: "center",
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 16,
   },
-  buttonText: { color: "#fff", fontWeight: "bold" },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
