@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { DashboardComponent } from '../cliente/dashboard/dashboard.component';
 import { MinhasEntregasComponent } from './minhas-entregas/minhas-entregas.component';
 import { NovaEntregaComponent } from './nova-entrega/nova-entrega.component';
-import { NotificacoesComponent } from './notificacoes/notificacoes.component';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -15,7 +14,6 @@ import { RouterModule } from '@angular/router';
     DashboardComponent,
     MinhasEntregasComponent,
     NovaEntregaComponent,
-    NotificacoesComponent,
     RouterModule
   ]
 })

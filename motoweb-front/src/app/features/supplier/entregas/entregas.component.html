@@ -1,0 +1,49 @@
+<h2>Entregas Pendentes</h2>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Retirada</th>
+      <th>Destino</th>
+      <th>Destinatário</th>
+      <th>Status</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let d of delivery">
+      <td>{{ d.id }}</td>
+      <td>{{ d.pickup }}</td>
+      <td>{{ d.destination }}</td>
+      <td>{{ d.recipient }}</td>
+      <td>{{ d.status }}</td>
+      <td>
+        <!-- Apenas para status PENDING -->
+        <ng-container *ngIf="d.status === 'PENDING'">
+          
+          <!-- Designar motoboy se ainda não foi designado -->
+          <div *ngIf="!d.motoboyId" class="mb-2">
+            <select [(ngModel)]="d.selectedMotoboyId" class="form-select form-select-sm">
+              <option *ngFor="let m of motoboys" [value]="m.id">{{ m.name }}</option>
+            </select>
+            <button class="btn btn-secondary btn-sm mt-1"
+              (click)="designarMotoboy(d.id, d.selectedMotoboyId)">Designar</button>
+          </div>
+
+          <button class="btn btn-success btn-sm me-1"
+            (click)="updateStatus(d.id, 'IN_PROGRESS')">Iniciar</button>
+
+          <button class="btn btn-danger btn-sm"
+            (click)="updateStatus(d.id, 'CANCELED')">Cancelar</button>
+        </ng-container>
+
+        <!-- Apenas para status IN_PROGRESS -->
+        <ng-container *ngIf="d.status === 'IN_PROGRESS'">
+          <button class="btn btn-primary btn-sm"
+            (click)="updateStatus(d.id, 'COMPLETED')">Concluir</button>
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>

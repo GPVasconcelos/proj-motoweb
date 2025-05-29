@@ -1,1 +1,25 @@
-<p>cadastro-central works!</p>
+<div class="container">
+  <h2>Cadastro de Central</h2>
+
+  <form (ngSubmit)="onSubmit()" #form="ngForm" class="mt-4">
+
+    <div class="mb-3">
+      <label class="form-label">CNPJ</label>
+      <input type="text" class="form-control" name="cnpj" [(ngModel)]="formData.cnpj" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Nome Fantasia</label>
+      <input type="text" class="form-control" name="fantasyName" [(ngModel)]="formData.fantasyName" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Ramo de Operação</label>
+      <input type="text" class="form-control" name="operation" [(ngModel)]="formData.operation" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+      Finalizar Cadastro
+    </button>
+  </form>
+</div>

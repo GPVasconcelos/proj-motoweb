@@ -96,12 +96,38 @@ export class SupplierService {
     return suppliers.map((s) => this.mapToSupplierEntity(s));
   }
 
+  // Visualizar Entregas
+  async getDeliveryBySupplier(userId: number) {
+  const supplier = await this.prisma.supplier.findUnique({
+    where: { userId }
+  });
+
+  if (!supplier) {
+    throw new NotFoundException('Fornecedor não encontrado');
+  }
+
+  return this.prisma.delivery.findMany({
+    where: { supplierId: supplier.id },
+    orderBy: { requestedAt: 'desc' },
+  });
+}
+ 
   // Visualizar Entregas Pendentes
   async getPendingDeliverys(supplierId: number) {
     return this.prisma.delivery.findMany({
       where: {
         supplierId,
         status: DeliveryStatus.PENDING,
+      },
+    });
+  }
+
+  // Vizualizar motoboy disponivel
+  async getMotoboyAvailable(supplierId: number) {
+    return this.prisma.motoboy.findMany({
+      where: {
+        supplierId,
+        status: DeliveryStatus.DISPONIVEL,
       },
     });
   }
