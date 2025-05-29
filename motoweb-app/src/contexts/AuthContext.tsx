@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       fullUser = {
         ...fullUser,
         motoboyId: motoboyData.id,
-        name: motoboyData.name, // Adiciona o nome do motoboy
+        name: motoboyData.name,
       };
     }
 
