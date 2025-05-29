@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import api from "../src/services/api";
 import { useAuth } from "../src/contexts/AuthContext";
 
@@ -102,12 +103,23 @@ export default function Entregas() {
 
       <View style={styles.buttons}>
         {item.status === "PENDING" && (
-          <TouchableOpacity
-            style={styles.buttonPrimary}
-            onPress={() => updateStatus(item.id, "IN_PROGRESS")}
-          >
-            <Text style={styles.buttonText}>Aceitar Entrega</Text>
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity
+              style={styles.buttonPrimary}
+              onPress={() => updateStatus(item.id, "IN_PROGRESS")}
+            >
+              <FontAwesome name="check" size={18} color="#fff" />
+              <Text style={styles.buttonText}>Aceitar Entrega</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.buttonDanger}
+              onPress={() => updateStatus(item.id, "CANCELED")}
+            >
+              <MaterialIcons name="cancel" size={20} color="#fff" />
+              <Text style={styles.buttonText}>Recusar Entrega</Text>
+            </TouchableOpacity>
+          </>
         )}
 
         {item.status === "IN_PROGRESS" && (
@@ -115,6 +127,7 @@ export default function Entregas() {
             style={styles.buttonSuccess}
             onPress={() => updateStatus(item.id, "COMPLETED")}
           >
+            <FontAwesome name="check-circle" size={20} color="#fff" />
             <Text style={styles.buttonText}>Finalizar Entrega</Text>
           </TouchableOpacity>
         )}
@@ -160,7 +173,6 @@ const styles = StyleSheet.create({
     color: "#1C1C1E",
     marginBottom: 16,
   },
-
   card: {
     backgroundColor: "#FFFFFF",
     padding: 16,
@@ -178,7 +190,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: "#007AFF",
   },
-
   infoContainer: {
     flexDirection: "row",
     marginBottom: 6,
@@ -192,12 +203,10 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#555",
   },
-
   status: {
     fontWeight: "bold",
     textTransform: "capitalize",
   },
-
   buttons: {
     marginTop: 14,
     flexDirection: "column",
@@ -208,19 +217,34 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
   },
   buttonSuccess: {
     backgroundColor: "#28A745",
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+  },
+  buttonDanger: {
+    backgroundColor: "#FF3B30",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
   },
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
+    marginLeft: 6,
   },
-
   center: {
     flex: 1,
     justifyContent: "center",
