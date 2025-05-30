@@ -31,10 +31,8 @@ export default function Login() {
   return (
     <View style={styles.container}>
       <Image
-        source={{
-          uri: "https://cdn-icons-png.flaticon.com/512/1472/1472852.png",
-        }}
-        style={styles.logo}
+        source={require("../../assets/images/logo.png")}
+        style={styles.cardImage}
         resizeMode="contain"
       />
 
@@ -139,5 +137,10 @@ const styles = StyleSheet.create({
     color: "#007AFF",
     fontWeight: "bold",
     fontSize: 15,
+  },
+  cardImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
   },
 });
