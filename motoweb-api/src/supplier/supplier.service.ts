@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SupplierEntity } from './entities/supplier.entity';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
@@ -113,42 +113,72 @@ export class SupplierService {
 }
  
   // Visualizar Entregas Pendentes
-  async getPendingDeliverys(supplierId: number) {
-    return this.prisma.delivery.findMany({
-      where: {
-        supplierId,
-        status: DeliveryStatus.PENDING,
-      },
-    });
-  }
-
-  // Vizualizar motoboy disponivel
-  async getMotoboyAvailable(supplierId: number) {
-    return this.prisma.motoboy.findMany({
-      where: {
-        supplierId,
-        status: DeliveryStatus.DISPONIVEL,
-      },
-    });
-  }
-
-  // Atribuir Motoboy a uma Entrega
-  async assignMotoboy(deliveryId: number, motoboyId: number) {
-    const delivery = await this.prisma.delivery.findUnique({
-      where: { id: deliveryId },
+  async getPendingDeliverys(UserId: number) {
+    const supplier = await this.prisma.supplier.findUnique({
+      where: { userId: UserId }
     });
 
-    if (!delivery) {
-      throw new NotFoundException('Entrega não encontrada');
+    if (!supplier) {
+      throw new NotFoundException('Fornecedor não encontrado');
     }
 
-    return this.prisma.delivery.update({
-      where: { id: deliveryId },
-      data: {
-        motoboyId,
+    return this.prisma.delivery.findMany({
+      where: {
+        supplierId: supplier.id,
+        status: DeliveryStatus.PENDING,
       },
+      orderBy: { requestedAt: 'desc' },
     });
   }
+
+// Vizualizar motoboy disponivel
+async getMotoboysByUserId(userId: number) {
+  const supplier = await this.prisma.supplier.findUnique({
+    where: { userId },
+  });
+
+  if (!supplier) {
+    throw new NotFoundException('Fornecedor não encontrado');
+  }
+
+  return this.prisma.motoboy.findMany({
+    where: {
+      status: 'DISPONIVEL',
+    },
+    select: {
+      id: true,
+      name: true,
+      status: true
+    }
+  });
+}
+
+  // Atribuir Motoboy a uma Entrega
+  async assignMotoboy(userId: number, deliveryId: number, motoboyId: number) {
+  const supplier = await this.prisma.supplier.findUnique({
+    where: { userId },
+  });
+
+  if (!supplier) {
+    throw new NotFoundException('Central fornecedora não encontrada');
+  }
+
+  const motoboy = await this.prisma.motoboy.findUnique({
+    where: { id: motoboyId },
+  });
+
+  if (!motoboy || motoboy.status !== 'DISPONIVEL') {
+    throw new BadRequestException('Motoboy indisponível para designação');
+  }
+
+  // Atualiza o status do motoboy se necessário
+  await this.prisma.motoboy.update({
+    where: { id: motoboy.id },
+    data: { status: 'OCUPADO' },
+  });
+
+  return { message: 'Motoboy designado com sucesso' };
+}
 
   // Cancelar Entrega
   async cancelDelivery(deliveryId: number) {
@@ -166,20 +196,18 @@ export class SupplierService {
     });
   }
 
-  // Relatório de Entregas por Status
-  async getDeliverysByStatus(supplierId: number, status: DeliveryStatus) {
-    return this.prisma.delivery.findMany({
-      where: {
-        supplierId,
-        status,
-      },
-    });
-  }
-
   // Histórico de Entregas
-  async getDeliveryHistory(supplierId: number) {
+  async getDeliveryHistory(UserId: number) {
+    const supplier = await this.prisma.supplier.findUnique({
+      where: { userId: UserId },
+    });
+    
+    if (!supplier) {
+      throw new NotFoundException('Fornecedor não encontrado');
+    }
+
     return this.prisma.delivery.findMany({
-      where: { supplierId },
+      where: { supplierId: supplier.id },
       orderBy: { requestedAt: 'desc' },
     });
   }
