@@ -53,8 +53,6 @@ export class CadastroComponent {
           this.router.navigate(['/cadastro/cadastro-cliente', userId]);
         } else if (this.formData.profileType === 'CENTRAL') {
           this.router.navigate(['/cadastro/cadastro-central', userId]);
-        } else if (this.formData.profileType === 'MOTOBOY') {
-          this.router.navigate(['/cadastro/cadastro-motoboy', userId]);
         } else {
           alert('Tipo de perfil não reconhecido.');
         }

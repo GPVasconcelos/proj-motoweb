@@ -51,10 +51,14 @@ export class ClientController {
   getDeliverysByClient(@Param('id') id: string) {
     return this.clientService.getDeliverysByClient(parseInt(id));
   }
-
-  //Consultar Entrega Específica
-  @Get(':id/delivery/:deliveryId')
-  getDeliveryById(@Param('id') id: string, @Param('deliveryId') deliveryId: string) {
-    return this.clientService.getDeliveryById(parseInt(id), parseInt(deliveryId));
+  
+  //Cancelar Entrega
+  @Patch(':userId/delivery/:deliveryId/cancel')
+  cancelDelivery(
+    @Param('userId') userId: number,
+    @Param('deliveryId') deliveryId: number,
+  ) {
+    return this.clientService.cancelDelivery(userId, deliveryId);
   }
+
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { DeliveryStatus } from '@prisma/client';
 import { CreateClientDto } from './dto/create-cliente.dto';
@@ -90,12 +90,26 @@ export class ClientService {
 
   //Criar Entrega
   async createDelivery(
-    clientId: number,
+    userId: number,
     data: { supplierId: number; pickup: string; destination: string; recipient: string; serviceType: string }
   ) {
+      const client = await this.prisma.client.findUnique({
+    where: { userId: userId },
+  });
+  if (!client) {
+    throw new NotFoundException('Cliente não encontrado');
+  }
+
+  const supplier = await this.prisma.supplier.findUnique({
+    where: { id: data.supplierId },
+  });
+  if (!supplier) {
+    throw new NotFoundException('Fornecedor não encontrado');
+  }
+  
     return this.prisma.delivery.create({
       data: {
-        clientId,
+        clientId: client.id,
         supplierId: data.supplierId,
         pickup: data.pickup,
         destination: data.destination,
@@ -108,23 +122,44 @@ export class ClientService {
   }
 
   //Listar Entregas do Cliente
-  async getDeliverysByClient(clientId: number) {
-    return this.prisma.delivery.findMany({
-      where: { clientId },
-      orderBy: { requestedAt: 'desc' },
-    });
+  async getDeliverysByClient(userId: number) {
+  const client = await this.prisma.client.findUnique({
+    where: { userId },
+  });
+
+  if (!client) {
+    throw new NotFoundException('Cliente não encontrado');
   }
 
-  //Consultar Entrega Específica
-  async getDeliveryById(clientId: number, deliveryId: number) {
-    const delivery = await this.prisma.delivery.findUnique({
-      where: { id: deliveryId },
+  return this.prisma.delivery.findMany({
+    where: { clientId: client.id },
+    orderBy: { requestedAt: 'desc' },
+  });
+}
+  //Cancelar Entrega
+async cancelDelivery(userId: number | string, deliveryId: number | string) {
+  const userIdNumber = Number(userId);
+  const deliveryIdNumber = Number(deliveryId); 
+
+    const client = await this.prisma.client.findUnique({
+      where: { userId: userIdNumber },
     });
 
-    if (!delivery || delivery.clientId !== clientId) {
-      throw new NotFoundException('Entrega não encontrada ou não pertence a este cliente');
+    if (!client) {
+      throw new NotFoundException('Cliente não encontrado');
     }
 
-    return delivery;
+      const delivery = await this.prisma.delivery.findUnique({
+    where: { id: deliveryIdNumber },
+  });
+
+    if (!delivery || delivery.clientId !== client.id) {
+    throw new ForbiddenException('Entrega não encontrada ou acesso não autorizado');
+  }
+
+    return this.prisma.delivery.update({
+      where: { id: deliveryIdNumber },
+      data: { status: DeliveryStatus.CANCELED },
+    });
   }
 }
