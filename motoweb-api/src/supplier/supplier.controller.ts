@@ -43,44 +43,36 @@ export class SupplierController {
   }
 
   //Visualizar Entregas
-  @Get(':userId/delivery')
-  findDeliveriesBySupplier(@Param('userId', ParseIntPipe) userId: number) {
-  return this.supplierService.getDeliveryBySupplier(userId);
+  @Get(':id/delivery')
+  findDeliveriesBySupplier(@Param('id', ParseIntPipe) id: number) {
+  return this.supplierService.getDeliveryBySupplier(id);
 }
 
-  //Visualizar Entregas Pendentes
-  @Get(':id/delivery/pending')
-  async getPendingDeliverys(@Param('id') id: string) {
-    return this.supplierService.getPendingDeliverys(parseInt(id));
+  //Vi sualizar Entregas Pendentes
+  @Get(':userid/delivery/pending')
+  async getPendingDeliverys(@Param('userid', ParseIntPipe) userId: number) {
+    return this.supplierService.getPendingDeliverys(userId);
+  }
+
+  //vizualizar motoboys disponiveis
+    @Get(':id/motoboys')
+  getMotoboys(@Param('id', ParseIntPipe) id: number) {
+    return this.supplierService.getMotoboys(id);
   }
 
   //Atribuir Motoboy a uma Entrega
-  @Patch('delivery/:deliveryId/assign')
-  async assignMotoboy(
-    @Param('deliveryId') deliveryId: string,
-    @Body('motoboyId') motoboyId: number
+  @Patch(':userId/delivery/:deliveryId/assign')
+  assignMotoboy(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('deliveryId', ParseIntPipe) deliveryId: number,
+    @Body('motoboyId', ParseIntPipe) motoboyId: number,
   ) {
-    return this.supplierService.assignMotoboy(parseInt(deliveryId), motoboyId);
-  }
-
-  //Cancelar Entrega
-  @Patch('delivery/:deliveryId/cancel')
-  async cancelDelivery(@Param('deliveryId') deliveryId: string) {
-    return this.supplierService.cancelDelivery(parseInt(deliveryId));
-  }
-
-  //Relatório por Status
-  @Get(':id/delivery/report')
-  async getDeliverysByStatus(
-    @Param('id') id: string,
-    @Body('status') status: DeliveryStatus
-  ) {
-    return this.supplierService.getDeliverysByStatus(parseInt(id), status);
+    return this.supplierService.assignMotoboy(userId, deliveryId, motoboyId);
   }
 
   //Histórico de Entregas
-  @Get(':id/delivery/history')
-  async getDeliveryHistory(@Param('id') id: string) {
-    return this.supplierService.getDeliveryHistory(parseInt(id));
+  @Get(':userId/delivery/history')
+  async getDeliveryHistory(@Param('userId', ParseIntPipe) userId: number) {
+    return this.supplierService.getDeliveryHistory(userId);
   }
 }

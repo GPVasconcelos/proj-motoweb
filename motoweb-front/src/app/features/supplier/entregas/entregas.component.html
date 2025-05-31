@@ -1,49 +1,51 @@
-<h2>Entregas Pendentes</h2>
+<h2 class="text-center mt-4">Entregas Pendentes</h2>
 
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Retirada</th>
-      <th>Destino</th>
-      <th>Destinatário</th>
-      <th>Status</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let d of delivery">
-      <td>{{ d.id }}</td>
-      <td>{{ d.pickup }}</td>
-      <td>{{ d.destination }}</td>
-      <td>{{ d.recipient }}</td>
-      <td>{{ d.status }}</td>
-      <td>
-        <!-- Apenas para status PENDING -->
-        <ng-container *ngIf="d.status === 'PENDING'">
-          
-          <!-- Designar motoboy se ainda não foi designado -->
-          <div *ngIf="!d.motoboyId" class="mb-2">
-            <select [(ngModel)]="d.selectedMotoboyId" class="form-select form-select-sm">
-              <option *ngFor="let m of motoboys" [value]="m.id">{{ m.name }}</option>
-            </select>
-            <button class="btn btn-secondary btn-sm mt-1"
-              (click)="designarMotoboy(d.id, d.selectedMotoboyId)">Designar</button>
-          </div>
+<div class="table-responsive px-2">
+  <table class="table table-bordered table-striped align-middle text-center">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Retirada</th>
+        <th>Destino</th>
+        <th>Destinatário</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of delivery">
+        <td>{{ d.id }}</td>
+        <td>{{ d.pickup }}</td>
+        <td>{{ d.destination }}</td>
+        <td>{{ d.recipient }}</td>
+        <td>
+          <span class="badge bg-warning text-dark">{{ d.status }}</span>
+        </td>
+        <td>
+          <!-- Se o status for PENDING -->
+          <ng-container *ngIf="d.status === 'PENDING'">
+            <!-- Se ainda não tem motoboy designado -->
+            <div *ngIf="!d.motoboyId" class="d-flex flex-column gap-2">
+              <!-- Select para escolher o motoboy -->
+              <select [(ngModel)]="d.selectedMotoboyId" class="form-select form-select-sm">
+                <option [value]="0">Selecione um motoboy</option>
+                <option *ngFor="let m of motoboys" [value]="m.id">{{ m.name }}</option>
+              </select>
+              <!-- Botão para confirmar designação -->
+              <button class="btn btn-primary btn-sm" (click)="designarMotoboy(d.id, d.selectedMotoboyId)">
+                Designar
+              </button>
+            </div>
 
-          <button class="btn btn-success btn-sm me-1"
-            (click)="updateStatus(d.id, 'IN_PROGRESS')">Iniciar</button>
-
-          <button class="btn btn-danger btn-sm"
-            (click)="updateStatus(d.id, 'CANCELED')">Cancelar</button>
-        </ng-container>
-
-        <!-- Apenas para status IN_PROGRESS -->
-        <ng-container *ngIf="d.status === 'IN_PROGRESS'">
-          <button class="btn btn-primary btn-sm"
-            (click)="updateStatus(d.id, 'COMPLETED')">Concluir</button>
-        </ng-container>
-      </td>
-    </tr>
-  </tbody>
-</table>
+            <!-- Se já tiver um motoboy designado, exibe o nome -->
+            <div *ngIf="d.motoboyId">
+              <span class="text-success">
+                Designado: {{ getMotoboyNameById(d.motoboyId) }}
+              </span>
+            </div>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

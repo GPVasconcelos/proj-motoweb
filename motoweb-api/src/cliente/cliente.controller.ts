@@ -38,12 +38,12 @@ export class ClientController {
   }
 
   //Criar Entrega
-  @Post(':id/delivery')
+  @Post(':userId/delivery')
   createDelivery(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
     @Body() data: { supplierId: number; pickup: string; destination: string; recipient: string; serviceType: string }
   ) {
-    return this.clientService.createDelivery(parseInt(id), data);
+    return this.clientService.createDelivery(parseInt(userId), data);
   }
 
   //Listar Entregas do Cliente
