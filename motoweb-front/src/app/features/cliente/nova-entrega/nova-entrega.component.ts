@@ -16,7 +16,7 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class NovaEntregaComponent implements OnInit {
 
-  clientId: number = 0;
+  userId: number = 0;
   suppliers: any[] = [];
 
   formData = {
@@ -42,7 +42,7 @@ decodeToken() {
   const token = localStorage.getItem('token');
   if (token) {
     const decoded: any = jwtDecode(token);
-    this.clientId = decoded.sub;
+    this.userId = decoded.sub;
   } else {
     console.error('Token não encontrado.');
   }
@@ -72,7 +72,7 @@ decodeToken() {
       serviceType: this.formData.serviceType
     };
 
-    this.http.post(`http://localhost:3000/client/${this.clientId}/delivery`, payload).subscribe({
+    this.http.post(`http://localhost:3000/client/${this.userId}/delivery`, payload).subscribe({
       next: () => {
         alert('Entrega solicitada com sucesso!');
         this.router.navigate(['/cliente/minhas-entregas']);

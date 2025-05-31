@@ -43,24 +43,25 @@ export class SupplierController {
   }
 
   //Visualizar Entregas
-  @Get(':userId/delivery')
-  findDeliveriesBySupplier(@Param('userId', ParseIntPipe) userId: number) {
-  return this.supplierService.getDeliveryBySupplier(userId);
+  @Get(':id/delivery')
+  findDeliveriesBySupplier(@Param('id', ParseIntPipe) id: number) {
+  return this.supplierService.getDeliveryBySupplier(id);
 }
 
-  //Visualizar Entregas Pendentes
-  @Get(':userId/delivery/pending')
-  async getPendingDeliverys(@Param('userId', ParseIntPipe) userId: number) {
+  //Vi sualizar Entregas Pendentes
+  @Get(':userid/delivery/pending')
+  async getPendingDeliverys(@Param('userid', ParseIntPipe) userId: number) {
     return this.supplierService.getPendingDeliverys(userId);
   }
+
   //vizualizar motoboys disponiveis
-    @Get(':userId/motoboys')
-  getMotoboysDisponiveis(@Param('userId', ParseIntPipe) userId: number) {
-    return this.supplierService.getMotoboysByUserId(userId);
+    @Get(':id/motoboys')
+  getMotoboys(@Param('id', ParseIntPipe) id: number) {
+    return this.supplierService.getMotoboys(id);
   }
 
   //Atribuir Motoboy a uma Entrega
-  @Patch('/:userId/delivery/:deliveryId/assign')
+  @Patch(':userId/delivery/:deliveryId/assign')
   assignMotoboy(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('deliveryId', ParseIntPipe) deliveryId: number,

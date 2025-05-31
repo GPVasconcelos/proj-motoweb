@@ -14,24 +14,36 @@ import { FormsModule } from '@angular/forms';
 export class EntregasComponent implements OnInit {
   delivery: any[] = [];       // Lista de entregas pendentes
   motoboys: any[] = [];       // Lista de motoboys disponíveis
-  supplierId: number = 0;     // ID da central fornecedora extraído do token
+  userId: number = 0;     // ID da central fornecedora extraído do token
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit() {
-    // Recupera o token armazenado localmente
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decoded: any = jwtDecode(token); // Decodifica o token JWT
-      this.supplierId = decoded.sub;         // Armazena o ID da central
-      this.loadEntregas();                   // Carrega as entregas pendentes
-      this.loadMotoboys();                   // Carrega os motoboys disponíveis
-    }
+  ngOnInit() { 
+    this.decodeToken();
+
+   // Garante que o ID foi corretamente carregado antes de chamar as requisições
+   if (this.userId > 0) {
+    this.loadEntregas();
+    this.loadMotoboys();
+  } else {
+    alert("Erro ao carregar informações da central. Faça login novamente.");
   }
+}
+
+    // Captura o clientId do token JWT
+  decodeToken() {
+  const token = localStorage.getItem('token');
+  if (token) {
+    const decoded: any = jwtDecode(token);
+    this.userId = decoded.sub;
+  } else {
+    console.error('Token não encontrado.');
+  }
+} 
 
   // Carrega as entregas pendentes para a central
   loadEntregas() {
-    this.http.get<any[]>(`http://localhost:3000/supplier/${this.supplierId}/delivery/pending`).subscribe({
+    this.http.get<any[]>(`http://localhost:3000/supplier/${this.userId}/delivery/pending`).subscribe({
       next: (res) => this.delivery = res,
       error: (err) => console.error('Erro ao carregar entregas:', err)
     });
@@ -39,7 +51,7 @@ export class EntregasComponent implements OnInit {
 
   // Carrega a lista de motoboys disponíveis
   loadMotoboys() {
-    this.http.get<any[]>(`http://localhost:3000/supplier/${this.supplierId}/motoboys`).subscribe({
+    this.http.get<any[]>(`http://localhost:3000/supplier/${this.userId}/motoboys`).subscribe({
       next: (res) => this.motoboys = res,
       error: (err) => console.error('Erro ao carregar motoboys:', err)
     });
@@ -52,7 +64,7 @@ export class EntregasComponent implements OnInit {
       return;
     }
 
-    this.http.patch(`http://localhost:3000/supplier/${this.supplierId}/delivery/${deliveryId}/assign`, { motoboyId }).subscribe({
+    this.http.patch(`http://localhost:3000/supplier/${this.userId}/delivery/${deliveryId}/assign`, { motoboyId }).subscribe({
       next: () => {
         alert("Motoboy designado com sucesso!");
         this.loadEntregas(); // Recarrega a lista de entregas para refletir a mudança

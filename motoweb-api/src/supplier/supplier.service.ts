@@ -113,9 +113,9 @@ export class SupplierService {
 }
  
   // Visualizar Entregas Pendentes
-  async getPendingDeliverys(UserId: number) {
+  async getPendingDeliverys(userId: number) {
     const supplier = await this.prisma.supplier.findUnique({
-      where: { userId: UserId }
+      where: { userId }
     });
 
     if (!supplier) {
@@ -132,7 +132,8 @@ export class SupplierService {
   }
 
 // Vizualizar motoboy disponivel
-async getMotoboysByUserId(userId: number) {
+async getMotoboys(userId: number) {
+  // Verifica se o fornecedor existe
   const supplier = await this.prisma.supplier.findUnique({
     where: { userId },
   });
@@ -153,28 +154,34 @@ async getMotoboysByUserId(userId: number) {
   });
 }
 
-  // Atribuir Motoboy a uma Entrega
   async assignMotoboy(userId: number, deliveryId: number, motoboyId: number) {
-  const supplier = await this.prisma.supplier.findUnique({
-    where: { userId },
-  });
-
+  const supplier = await this.prisma.supplier.findUnique({ where: { userId } });
   if (!supplier) {
-    throw new NotFoundException('Central fornecedora não encontrada');
+    throw new NotFoundException('Fornecedor não encontrado');
   }
 
-  const motoboy = await this.prisma.motoboy.findUnique({
-    where: { id: motoboyId },
-  });
-
+  const motoboy = await this.prisma.motoboy.findUnique({ where: { id: motoboyId } });
   if (!motoboy || motoboy.status !== 'DISPONIVEL') {
-    throw new BadRequestException('Motoboy indisponível para designação');
+    throw new BadRequestException('Motoboy não está disponível');
   }
 
-  // Atualiza o status do motoboy se necessário
+  const delivery = await this.prisma.delivery.findUnique({ where: { id: deliveryId } });
+  if (!delivery || delivery.supplierId !== supplier.id) {
+    throw new NotFoundException('Entrega não encontrada ou não pertence a esta central');
+  }
+
+  // Atualiza status do motoboy
   await this.prisma.motoboy.update({
     where: { id: motoboy.id },
     data: { status: 'OCUPADO' },
+  });
+
+  // Atualiza a entrega com o motoboy designado
+  await this.prisma.delivery.update({
+    where: { id: deliveryId },
+    data: {
+      motoboyId: motoboy.id,
+    },
   });
 
   return { message: 'Motoboy designado com sucesso' };
