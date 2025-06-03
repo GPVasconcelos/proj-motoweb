@@ -1,49 +1,111 @@
-<div class="container">
-  <h2>Cadastro de Usuário</h2>
+<div class="register-wrapper d-flex justify-content-center align-items-center py-5">
+  <div class="card shadow-lg p-5 rounded-4 w-100" style="max-width: 600px;">
+    
+    <!-- Título -->
+    <h2 class="text-center fw-bold mb-4">
+      <i class="bi bi-person-plus-fill me-2 text-primary"></i>
+      Cadastro de Usuário
+    </h2>
 
-  <form (ngSubmit)="onSubmit()" #form="ngForm" class="mt-4">
+    <!-- Formulário de Cadastro -->
+    <form (ngSubmit)="onSubmit()" #form="ngForm">
+      
+      <!-- Nome -->
+      <div class="mb-3">
+        <label class="form-label">Nome</label> 
+        <input
+          type="text"
+          class="form-control rounded-pill"
+          name="name"
+          [(ngModel)]="formData.name"
+          required
+        />
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label">Nome</label>
-      <input type="text" class="form-control" name="name" [(ngModel)]="formData.name" required>
-    </div>
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control rounded-pill"
+          name="email"
+          [(ngModel)]="formData.email"
+          required
+        />
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-control" name="email" [(ngModel)]="formData.email" required>
-    </div>
+      <!-- Telefone -->
+      <div class="mb-3">
+        <label class="form-label">Telefone</label>
+        <input
+          type="text"
+          class="form-control rounded-pill"
+          name="phone"
+          [(ngModel)]="formData.phone"
+          required
+        />
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label">Telefone</label>
-      <input type="text" class="form-control" name="phone" [(ngModel)]="formData.phone" required>
-    </div>
+      <!-- Endereço -->
+      <div class="mb-3">
+        <label class="form-label">Endereço</label>
+        <input
+          type="text"
+          class="form-control rounded-pill"
+          name="address"
+          [(ngModel)]="formData.address"
+          required
+        />
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label">Endereço</label>
-      <input type="text" class="form-control" name="address" [(ngModel)]="formData.address" required>
-    </div>
+      <!-- Senha -->
+      <div class="mb-3">
+        <label class="form-label">Senha</label>
+        <input
+          type="password"
+          class="form-control rounded-pill"
+          name="password"
+          [(ngModel)]="formData.password"
+          required
+        />
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label">Senha</label>
-      <input type="password" class="form-control" name="password" [(ngModel)]="formData.password" required>
-    </div>
+      <!-- Confirmar senha -->
+      <div class="mb-3">
+        <label class="form-label">Confirme sua senha</label>
+        <input
+          type="password"
+          class="form-control rounded-pill"
+          name="confirmPassword"
+          [(ngModel)]="formData.confirmPassword"
+          required
+        />
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label">Confirme sua senha</label>
-      <input type="password" class="form-control" name="confirmPassword" [(ngModel)]="formData.confirmPassword" required>
-    </div>
+      <!-- Tipo de perfil -->
+      <div class="mb-4">
+        <label class="form-label">Tipo de Perfil</label>
+        <select
+          class="form-control rounded-pill"
+          name="profileType"
+          [(ngModel)]="formData.profileType"
+          required
+        >
+          <option value="">Selecione</option>
+          <option value="CLIENTE">Cliente</option>
+          <option value="CENTRAL">Central</option>
+        </select>
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label">Tipo de Perfil</label>
-      <select class="form-control" name="profileType" [(ngModel)]="formData.profileType" required>
-        <option value="">Selecione</option>
-        <option value="CLIENTE">Cliente</option>
-        <option value="CENTRAL">Central</option>
-      </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
-      Cadastrar
-    </button>
-  </form>
+      <!-- Botão de ação -->
+      <button
+        type="submit"
+        class="btn btn-success w-100 rounded-pill fw-bold"
+        [disabled]="form.invalid"
+      >
+        <i class="bi bi-check-circle me-2"></i>
+        Cadastrar
+      </button>
+    </form>
+  </div>
 </div>

@@ -16,11 +16,11 @@ export class DashboardComponent {
     private router: Router
   ) {}
 
+  /**
+   * Realiza logout e redireciona para a tela de login
+   */
   logout(): void {
-    // Executa o logout via serviço de autenticação
-    this.authService.logout();
-
-    // Redireciona para a rota de login
-    this.router.navigate(['/login']);
+    this.authService.logout(); // Limpa token, dados de sessão, etc.
+    this.router.navigate(['/login']); // Redireciona
   }
 }

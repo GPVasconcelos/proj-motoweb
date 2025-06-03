@@ -14,8 +14,10 @@ import { RouterModule } from '@angular/router';
 })
 export class CadastroCentralComponent implements OnInit {
 
+  // ID do usuário principal, recebido por rota
   userId: number = 0;
 
+  // Dados do formulário da central
   formData = {
     cnpj: '',
     fantasyName: '',
@@ -28,10 +30,22 @@ export class CadastroCentralComponent implements OnInit {
     private router: Router
   ) {}
 
+  /**
+   * Captura o userId da rota ao carregar o componente
+   */
   ngOnInit(): void {
-    this.userId = Number(this.route.snapshot.paramMap.get('userId'));
+    const id = this.route.snapshot.paramMap.get('userId');
+    this.userId = id ? Number(id) : 0;
+
+    if (!this.userId) {
+      alert('ID de usuário inválido ou ausente.');
+      this.router.navigate(['/cadastro']);
+    }
   }
 
+  /**
+   * Envia os dados da central para a API
+   */
   onSubmit(): void {
     const payload = {
       userId: this.userId,

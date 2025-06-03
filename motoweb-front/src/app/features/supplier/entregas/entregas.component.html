@@ -1,7 +1,10 @@
-<h2 class="text-center mt-4">Entregas Pendentes</h2>
+<h2 class="text-center fw-bold my-4">
+  <i class="bi bi-clock-history text-warning me-2"></i>
+  Entregas Pendentes
+</h2>
 
-<div class="table-responsive px-2">
-  <table class="table table-bordered table-striped align-middle text-center">
+<div class="table-responsive px-3">
+  <table class="table table-bordered table-hover align-middle text-center">
     <thead class="table-light">
       <tr>
         <th>ID</th>
@@ -19,29 +22,29 @@
         <td>{{ d.destination }}</td>
         <td>{{ d.recipient }}</td>
         <td>
-          <span class="badge bg-warning text-dark">{{ d.status }}</span>
+          <span class="badge bg-warning text-dark text-uppercase">
+            {{ d.status }}
+          </span>
         </td>
         <td>
-          <!-- Se o status for PENDING -->
           <ng-container *ngIf="d.status === 'PENDING'">
-            <!-- Se ainda não tem motoboy designado -->
+            <!-- Caso não tenha motoboy designado -->
             <div *ngIf="!d.motoboyId" class="d-flex flex-column gap-2">
-              <!-- Select para escolher o motoboy -->
-              <select [(ngModel)]="d.selectedMotoboyId" class="form-select form-select-sm">
+              <select [(ngModel)]="d.selectedMotoboyId" class="form-select form-select-sm rounded-pill">
                 <option [value]="0">Selecione um motoboy</option>
                 <option *ngFor="let m of motoboys" [value]="m.id">{{ m.name }}</option>
               </select>
-              <!-- Botão para confirmar designação -->
-              <button class="btn btn-primary btn-sm" (click)="designarMotoboy(d.id, d.selectedMotoboyId)">
-                Designar
+              <button
+                class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center gap-1"
+                (click)="designarMotoboy(d.id, d.selectedMotoboyId)">
+                <i class="bi bi-person-check-fill"></i> Designar
               </button>
             </div>
 
-            <!-- Se já tiver um motoboy designado, exibe o nome -->
-            <div *ngIf="d.motoboyId">
-              <span class="text-success">
-                Designado: {{ getMotoboyNameById(d.motoboyId) }}
-              </span>
+            <!-- Caso já tenha motoboy designado -->
+            <div *ngIf="d.motoboyId" class="text-success small mt-2">
+              <i class="bi bi-check-circle-fill me-1"></i>
+              Designado: {{ getMotoboyNameById(d.motoboyId) }}
             </div>
           </ng-container>
         </td>

@@ -1,15 +1,66 @@
+/* Define imagem de fundo e centralização */
+.login-wrapper {
+  background-image: url('../../../../../src/assets/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ 
+}
+
+/* Define cor de fundo suave e centralização */
+body {
+  background-color: #f4f6f9;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Input e botão com cantos arredondados */
+.form-control {
+  border-radius: 2rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+}
+
+.input-group-text {
+  border-radius: 2rem 0 0 2rem;
+  background-color: #f0f0f0;
+  border: none;
+}
+
+/* Botão de login */
+button[type="submit"] {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #0d6efd; /* Bootstrap primary */
+  transition: background-color 0.2s ease-in-out;
+}
+
+button[type="submit"]:hover {
+  background-color: #0b5ed7;
+}
+
+/* Link de cadastro */
 a {
-  color: #007bff;
-  text-decoration: none;
+  color: #0d6efd;
+  transition: color 0.2s ease-in-out;
+  font-size: 0.9rem;
 }
 
 a:hover {
+  color: #084298;
   text-decoration: underline;
 }
-a {
-  pointer-events: none;  /* ERRADO - impede clicar */
-}
 
-div {
-  z-index: -1;  /* Pode sobrepor o link e impedir o clique */
+/* Alerta de erro */
+.alert {
+  font-size: 0.9rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
 }
