@@ -12,6 +12,7 @@ import {
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import api from "../src/services/api";
 import { useAuth } from "../src/contexts/AuthContext";
+import { useRouter } from "expo-router";
 
 interface Delivery {
   id: number;
@@ -24,6 +25,7 @@ interface Delivery {
 export default function Entregas() {
   const { user } = useAuth();
   const motoboyId = user?.motoboyId;
+  const router = useRouter();
 
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [loading, setLoading] = useState(true);
@@ -145,6 +147,12 @@ export default function Entregas() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => router.push("/dashboard")}
+      >
+        <Text style={styles.backButtonText}>← Voltar ao Dashboard</Text>
+      </TouchableOpacity>
       <Text style={styles.title}>Minhas Entregas</Text>
 
       <FlatList
@@ -255,5 +263,13 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
     marginTop: 24,
     fontSize: 16,
+  },
+  backButton: {
+    marginBottom: 12,
+  },
+  backButtonText: {
+    color: "#007AFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

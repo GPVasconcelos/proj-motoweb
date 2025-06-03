@@ -52,6 +52,12 @@ export default function CadastroMotoboy() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => router.push("/cadastroUsuario")}
+      >
+        <Text style={styles.backButtonText}>← Voltar ao Dashboard</Text>
+      </TouchableOpacity>
       <Text style={styles.title}>Cadastro de Motoboy</Text>
 
       <TextInput
@@ -105,4 +111,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonText: { color: "#fff", fontWeight: "bold" },
+  backButton: {
+    marginBottom: 16,
+  },
+  backButtonText: {
+    color: "#007AFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
 });
