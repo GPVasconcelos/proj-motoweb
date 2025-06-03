@@ -1,11 +1,13 @@
-<div class="container">
-  <h2>Solicitar Nova Entrega</h2>
+<div class="container py-4">
+  <h2 class="fw-bold mb-4">
+    <i class="bi bi-send-plus-fill text-primary me-2"></i> Solicitar Nova Entrega
+  </h2>
 
-  <form (ngSubmit)="onSubmit()" #form="ngForm" class="mt-4">
-
-    <div class="mb-3">
+  <form (ngSubmit)="onSubmit()" #form="ngForm" class="row g-3">
+    <!-- Seleção de Central -->
+    <div class="col-12">
       <label class="form-label">Central (Fornecedor)</label>
-      <select class="form-control" name="supplierId" [(ngModel)]="formData.supplierId" required>
+      <select class="form-control rounded-pill" name="supplierId" [(ngModel)]="formData.supplierId" required>
         <option value="">Selecione uma central</option>
         <option *ngFor="let supplier of suppliers" [value]="supplier.id">
           {{ supplier.fantasyName }} (ID: {{ supplier.id }})
@@ -13,28 +15,35 @@
       </select>
     </div>
 
-    <div class="mb-3">
+    <!-- Local de Retirada -->
+    <div class="col-md-6">
       <label class="form-label">Local de Retirada</label>
-      <input type="text" class="form-control" name="pickup" [(ngModel)]="formData.pickup" required>
+      <input type="text" class="form-control rounded-pill" name="pickup" [(ngModel)]="formData.pickup" required />
     </div>
 
-    <div class="mb-3">
+    <!-- Local de Entrega -->
+    <div class="col-md-6">
       <label class="form-label">Local de Entrega</label>
-      <input type="text" class="form-control" name="destination" [(ngModel)]="formData.destination" required>
+      <input type="text" class="form-control rounded-pill" name="destination" [(ngModel)]="formData.destination" required />
     </div>
 
-    <div class="mb-3">
+    <!-- Destinatário -->
+    <div class="col-md-6">
       <label class="form-label">Destinatário</label>
-      <input type="text" class="form-control" name="recipient" [(ngModel)]="formData.recipient" required>
+      <input type="text" class="form-control rounded-pill" name="recipient" [(ngModel)]="formData.recipient" required />
     </div>
 
-    <div class="mb-3">
+    <!-- Tipo de Serviço -->
+    <div class="col-md-6">
       <label class="form-label">Tipo de Serviço</label>
-      <input type="text" class="form-control" name="serviceType" [(ngModel)]="formData.serviceType" required>
+      <input type="text" class="form-control rounded-pill" name="serviceType" [(ngModel)]="formData.serviceType" required />
     </div>
 
-    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
-      Solicitar Entrega
-    </button>
+    <!-- Botão -->
+    <div class="col-12 mt-3">
+      <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold" [disabled]="form.invalid">
+        <i class="bi bi-check-circle me-2"></i> Solicitar Entrega
+      </button>
+    </div>
   </form>
 </div>

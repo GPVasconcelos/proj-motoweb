@@ -1,37 +1,41 @@
-<div class="container">
-  <h2>Minhas Entregas</h2>
+<div class="container py-4">
+  <h2 class="fw-bold mb-4">
+    <i class="bi bi-truck me-2 text-primary"></i> Minhas Entregas
+  </h2>
 
-  <table class="table table-bordered table-hover mt-4">
-    <thead class="table-light">
-      <tr>
-        <th>ID</th>
-        <th>Retirada</th>
-        <th>Entrega</th>
-        <th>Destinatário</th>
-        <th>Status</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let delivery of delivery">
-        <td>{{ delivery.id }}</td>
-        <td>{{ delivery.pickup }}</td>
-        <td>{{ delivery.destination }}</td>
-        <td>{{ delivery.recipient }}</td>
-        <td>
-          <span class="badge" [ngClass]="getStatusClass(delivery.status)">
-            {{ delivery.status }}
-          </span>
-        </td>
-        <td>
-          <button 
-            class="btn btn-danger btn-sm" 
-            (click)="cancelDelivery(delivery.id)" 
-            [disabled]="delivery.status !== 'PENDING'">
-            Cancelar
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Retirada</th>
+          <th>Entrega</th>
+          <th>Destinatário</th>
+          <th>Status</th>
+          <th class="text-center">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let delivery of delivery">
+          <td>{{ delivery.id }}</td>
+          <td>{{ delivery.pickup }}</td>
+          <td>{{ delivery.destination }}</td>
+          <td>{{ delivery.recipient }}</td>
+          <td>
+            <span class="badge" [ngClass]="getStatusClass(delivery.status)">
+              {{ delivery.status }}
+            </span>
+          </td>
+          <td class="text-center">
+            <button 
+              class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 mx-auto"
+              (click)="cancelDelivery(delivery.id)" 
+              [disabled]="delivery.status !== 'PENDING'">
+              <i class="bi bi-x-circle-fill"></i> Cancelar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

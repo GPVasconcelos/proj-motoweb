@@ -1,28 +1,60 @@
-<div class="container d-flex justify-content-center align-items-center vh-100">
-  <div class="card p-4" style="min-width: 400px;">
-    <h2 class="text-center mb-4">MotoWeb Login</h2>
+<div class="login-wrapper d-flex justify-content-center align-items-center py-5">
+  <div class="card shadow-lg p-5 rounded-4" style="min-width: 400px; max-width: 500px;">
+   
+    <div class="text-center mb-4">
+      <h2 class="fw-bold"><i class="bi bi-box-seam-fill me-2 text-primary"></i> MotoWeb Login</h2>
+      <p class="text-muted">Acesse sua conta para continuar</p>
+    </div>
 
     <form (ngSubmit)="onSubmit()">
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="email" class="form-control" [(ngModel)]="email" name="email" required>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+          <input
+            type="email"
+            class="form-control rounded-end"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="exemplo@gmail.com"
+            required
+          />
+        </div>
       </div>
 
       <div class="mb-3">
         <label class="form-label">Senha</label>
-        <input type="password" class="form-control" [(ngModel)]="password" name="password" required>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+          <input
+            type="password"
+            class="form-control rounded-end"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Digite sua senha"
+            required
+          />
+        </div>
       </div>
 
-      <div *ngIf="loginError" class="alert alert-danger">
-        Email ou senha inválidos
+      <div *ngIf="loginError" class="alert alert-danger py-2">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> Email ou senha inválidos.
       </div>
 
-      <button type="submit" class="btn btn-primary w-100" [disabled]="loading">
+      <button
+        type="submit"
+        class="btn btn-primary w-100 rounded-pill fw-bold"
+        [disabled]="loading"
+      >
+        <i class="bi bi-box-arrow-in-right me-2"></i>
         {{ loading ? 'Entrando...' : 'Entrar' }}
       </button>
     </form>
+
     <div class="text-center mt-3">
-     <a routerLink="/cadastro" style="cursor: pointer;">Não tem uma conta? Cadastre-se aqui</a>
+      <a routerLink="/cadastro" class="text-decoration-none">
+        <i class="bi bi-person-plus-fill me-1"></i> Não tem uma conta? Cadastre-se aqui
+      </a>
     </div>
   </div>
 </div>

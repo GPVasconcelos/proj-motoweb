@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-
 @Component({
   selector: 'app-cadastro',
   standalone: true,
@@ -13,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./cadastro.component.css']
 })
 export class CadastroComponent {
-
+  // Modelo do formulário principal
   formData = {
     name: '',
     email: '',
@@ -29,12 +28,18 @@ export class CadastroComponent {
     private router: Router
   ) {}
 
+  /**
+   * Envia os dados do formulário para o backend.
+   * Valida se as senhas coincidem e redireciona conforme o tipo de perfil.
+   */
   onSubmit(): void {
+    // Verificação de senha
     if (this.formData.password !== this.formData.confirmPassword) {
       alert('As senhas não conferem.');
       return;
     }
 
+    // Montagem do payload com os dados principais
     const payload = {
       name: this.formData.name,
       email: this.formData.email,
@@ -44,11 +49,12 @@ export class CadastroComponent {
       profileType: this.formData.profileType
     };
 
-  this.http.post<any>('http://localhost:3000/auth/register', payload).subscribe({
+    // Requisição de registro para a API
+    this.http.post<any>('http://localhost:3000/auth/register', payload).subscribe({
       next: (res) => {
         const userId = res.id;
 
-        // Verifica o tipo de perfil e direciona para a tela correta
+        // Redireciona conforme o perfil selecionado
         if (this.formData.profileType === 'CLIENTE') {
           this.router.navigate(['/cadastro/cadastro-cliente', userId]);
         } else if (this.formData.profileType === 'CENTRAL') {

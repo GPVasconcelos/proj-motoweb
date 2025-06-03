@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-
 
 @Component({
   selector: 'app-nova-entrega',
@@ -32,24 +30,35 @@ export class NovaEntregaComponent implements OnInit {
     private router: Router
   ) {}
 
+  /**
+   * Inicializa o componente carregando os dados essenciais.
+   */
   ngOnInit(): void {
     this.decodeToken();
     this.loadSuppliers();
   }
 
-  // Captura o clientId do token JWT
-decodeToken() {
-  const token = localStorage.getItem('token');
-  if (token) {
-    const decoded: any = jwtDecode(token);
-    this.userId = decoded.sub;
-  } else {
-    console.error('Token não encontrado.');
+  /**
+   * Decodifica o token JWT armazenado e obtém o ID do cliente (userId).
+   */
+  decodeToken(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token);
+        this.userId = decoded.sub;
+      } catch {
+        console.error('Erro ao decodificar o token.');
+      }
+    } else {
+      console.error('Token não encontrado.');
+    }
   }
-}
 
-  // Carrega as centrais (suppliers) para o select
-  loadSuppliers() {
+  /**
+   * Carrega as centrais (fornecedores) disponíveis para o select.
+   */
+  loadSuppliers(): void {
     this.http.get<any[]>('http://localhost:3000/supplier').subscribe({
       next: (res) => {
         this.suppliers = res;
@@ -60,10 +69,15 @@ decodeToken() {
     });
   }
 
-  // Envia a solicitação de entrega
+  /**
+   * Envia a solicitação de entrega com os dados preenchidos.
+   */
   onSubmit(): void {
-    this.decodeToken();
-    this.loadSuppliers();
+    if (!this.userId) {
+      alert('Usuário não autenticado.');
+      return;
+    }
+
     const payload = {
       supplierId: Number(this.formData.supplierId),
       pickup: this.formData.pickup,

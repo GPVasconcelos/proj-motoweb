@@ -14,8 +14,10 @@ import { RouterModule } from '@angular/router';
 })
 export class CadastroClienteComponent implements OnInit {
 
+  // ID do usuário principal (recebido via rota)
   userId: number = 0;
 
+  // Dados do formulário de cliente
   formData = {
     cnpj: '',
     stateReg: '',
@@ -29,11 +31,22 @@ export class CadastroClienteComponent implements OnInit {
     private router: Router
   ) {}
 
+  /**
+   * Ao inicializar o componente, captura o userId da URL
+   */
   ngOnInit(): void {
-    // Pega o userId vindo da URL
-    this.userId = Number(this.route.snapshot.paramMap.get('userId'));
+    const id = this.route.snapshot.paramMap.get('userId');
+    this.userId = id ? Number(id) : 0;
+
+    if (!this.userId) {
+      alert('ID de usuário inválido ou ausente.');
+      this.router.navigate(['/cadastro']);
+    }
   }
 
+  /**
+   * Envia os dados do cliente para a API
+   */
   onSubmit(): void {
     const payload = {
       userId: this.userId,
