@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import api from "../src/services/api";
 import { useAuth } from "../src/contexts/AuthContext";
+import { router, useRouter } from "expo-router";
 
 interface Vehicle {
   id: number;
@@ -29,6 +30,7 @@ interface Vehicle {
 export default function Veiculos() {
   const { user } = useAuth();
   const motoboyId = user?.motoboyId;
+  const router = useRouter();
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [model, setModel] = useState("");
@@ -124,6 +126,12 @@ export default function Veiculos() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+      <TouchableOpacity
+        onPress={() => router.push("/dashboard")}
+        style={styles.backButton}
+      >
+        <Text style={styles.backButtonText}>← Voltar</Text>
+      </TouchableOpacity>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
@@ -280,5 +288,13 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
     marginTop: 24,
     fontSize: 16,
+  },
+  backButton: {
+    marginBottom: 12,
+  },
+  backButtonText: {
+    color: "#007AFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
