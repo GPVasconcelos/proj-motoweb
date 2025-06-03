@@ -85,6 +85,13 @@ export default function CadastroUsuario() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.push("/login")}
+        >
+          <Feather name="arrow-left" size={24} color="#007AFF" />
+          <Text style={styles.backButtonText}>Voltar ao Dashboard</Text>
+        </TouchableOpacity>
         <Text style={styles.title}>Cadastro de Usuário</Text>
 
         <TextInput
@@ -198,5 +205,16 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: "#007AFF",
+    marginLeft: 8,
+    fontWeight: "600",
   },
 });
