@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { DeliveryStatus } from '@prisma/client';
 import { MotoboyEntity } from './entities/motoboy.entity';
@@ -12,7 +16,7 @@ import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 export class MotoboyService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Mapear para MotoboyEntity
+  // Mapeia o motoboy do banco para a entidade da API
   private mapToMotoboyEntity(motoboy: any): MotoboyEntity {
     return {
       id: motoboy.id,
@@ -28,7 +32,7 @@ export class MotoboyService {
     };
   }
 
-  // Mapear para VehicleEntity
+  // Mapeia o veículo do banco para a entidade da API
   private mapToVehicleEntity(vehicle: any): VehicleEntity {
     return {
       id: vehicle.id,
@@ -42,35 +46,25 @@ export class MotoboyService {
     };
   }
 
-  //Cadastrar um Motoboy
+  // Cadastrar um novo motoboy
   async createMotoboy(
     createMotoboyDto: CreateMotoboyDto,
   ): Promise<MotoboyEntity> {
     const motoboy = await this.prisma.motoboy.create({
-      data: {
-        userId: createMotoboyDto.userId,
-        name: createMotoboyDto.name,
-        cpf: createMotoboyDto.cpf,
-        cnh: createMotoboyDto.cnh,
-        status: createMotoboyDto.status,
-        gender: createMotoboyDto.gender,
-        emergencyContact: createMotoboyDto.emergencyContact,
-      },
+      data: { ...createMotoboyDto },
     });
     return this.mapToMotoboyEntity(motoboy);
   }
 
-  //Listar Motoboy
+  // Listar todos os motoboys
   async getMotoboys(): Promise<MotoboyEntity[]> {
     const motoboys = await this.prisma.motoboy.findMany();
     return motoboys.map(this.mapToMotoboyEntity);
   }
 
-  //Obter Motoboy por ID
+  // Obter motoboy por ID
   async getMotoboyById(id: number): Promise<MotoboyEntity> {
-    const motoboy = await this.prisma.motoboy.findUnique({
-      where: { id },
-    });
+    const motoboy = await this.prisma.motoboy.findUnique({ where: { id } });
 
     if (!motoboy) {
       throw new NotFoundException('Motoboy não encontrado');
@@ -79,10 +73,10 @@ export class MotoboyService {
     return this.mapToMotoboyEntity(motoboy);
   }
 
-  //Atualizar Motoboy
+  // Atualizar dados de um motoboy
   async updateMotoboy(
     id: number,
-    UpdateMotoboyDto: UpdateMotoboyDto,
+    updateMotoboyDto: UpdateMotoboyDto,
   ): Promise<MotoboyEntity> {
     const motoboy = await this.prisma.motoboy.findUnique({ where: { id } });
 
@@ -90,22 +84,15 @@ export class MotoboyService {
       throw new NotFoundException('Motoboy não encontrado');
     }
 
-    const updatedMotoboy = await this.prisma.motoboy.update({
+    const updated = await this.prisma.motoboy.update({
       where: { id },
-      data: {
-        name: UpdateMotoboyDto.name,
-        cpf: UpdateMotoboyDto.cpf,
-        cnh: UpdateMotoboyDto.cnh,
-        status: UpdateMotoboyDto.status,
-        gender: UpdateMotoboyDto.gender,
-        emergencyContact: UpdateMotoboyDto.emergencyContact,
-      },
+      data: { ...updateMotoboyDto },
     });
 
-    return this.mapToMotoboyEntity(updatedMotoboy);
+    return this.mapToMotoboyEntity(updated);
   }
 
-  //Remover Motoboy
+  // Remover um motoboy
   async deleteMotoboy(id: number) {
     const motoboy = await this.prisma.motoboy.findUnique({ where: { id } });
 
@@ -116,26 +103,18 @@ export class MotoboyService {
     return this.prisma.motoboy.delete({ where: { id } });
   }
 
-  //Registrar um Veículo para o Motoboy
+  // Registrar um novo veículo para o motoboy
   async createVehicle(
     motoboyId: number,
     data: CreateVehicleDto,
   ): Promise<VehicleEntity> {
     const vehicle = await this.prisma.vehicle.create({
-      data: {
-        model: data.model,
-        color: data.color,
-        type: data.type,
-        renavam: data.renavam,
-        year: data.year,
-        plate: data.plate,
-        motoboyId,
-      },
+      data: { ...data, motoboyId },
     });
     return this.mapToVehicleEntity(vehicle);
   }
 
-  //Atualizar um Veículo do Motoboy
+  // Atualizar um veículo de um motoboy
   async updateVehicle(
     motoboyId: number,
     vehicleId: number,
@@ -160,7 +139,7 @@ export class MotoboyService {
     return this.mapToVehicleEntity(updated);
   }
 
-  //Remover um Veículo do Motoboy
+  // Remover um veículo do motoboy
   async deleteVehicle(motoboyId: number, vehicleId: number) {
     const vehicle = await this.prisma.vehicle.findUnique({
       where: { id: vehicleId },
@@ -176,7 +155,7 @@ export class MotoboyService {
     return this.prisma.vehicle.delete({ where: { id: vehicleId } });
   }
 
-  // Listar Veículos Cadastrados pelo Motoboy
+  // Listar todos os veículos cadastrados por um motoboy
   async getVehiclesByMotoboy(motoboyId: number): Promise<VehicleEntity[]> {
     const vehicles = await this.prisma.vehicle.findMany({
       where: { motoboyId },
@@ -185,7 +164,7 @@ export class MotoboyService {
     return vehicles.map((v) => this.mapToVehicleEntity(v));
   }
 
-  // Listar Entregas Atribuídas ao Motoboy
+  // Listar entregas atribuídas ao motoboy
   async getDeliveriesByMotoboy(motoboyId: number) {
     return this.prisma.delivery.findMany({
       where: { motoboyId },
@@ -193,28 +172,73 @@ export class MotoboyService {
     });
   }
 
-  // Atualizar Status da Entrega (IN_PROGRESS, COMPLETED, CANCELED)
+  // Atualizar status da entrega com base na ação do motoboy
   async updateDeliveryStatus(
     motoboyId: number,
     deliveryId: number,
-    status: DeliveryStatus,
+    action: 'ACEITAR' | 'RECUSAR' | 'COMPLETED',
   ) {
     const delivery = await this.prisma.delivery.findUnique({
       where: { id: deliveryId },
     });
 
     if (!delivery || delivery.motoboyId !== motoboyId) {
-      throw new NotFoundException(
-        'Entrega não encontrada ou não atribuída a este motoboy',
-      );
+      throw new NotFoundException('Entrega não atribuída a este motoboy.');
     }
 
-    return this.prisma.delivery.update({
-      where: { id: deliveryId },
-      data: { status },
-    });
+    // Recusar a entrega
+    if (action === 'RECUSAR') {
+      await this.prisma.delivery.update({
+        where: { id: deliveryId },
+        data: {
+          status: DeliveryStatus.PENDING,
+          motoboyId: null,
+        },
+      });
+
+      await this.prisma.motoboy.update({
+        where: { id: motoboyId },
+        data: { status: 'DISPONIVEL' },
+      });
+
+      return { message: 'Entrega recusada. Motoboy liberado.' };
+    }
+
+    // Aceitar a entrega
+    if (action === 'ACEITAR') {
+      await this.prisma.delivery.update({
+        where: { id: deliveryId },
+        data: {
+          status: DeliveryStatus.IN_PROGRESS,
+          motoboyId,
+        },
+      });
+
+      await this.prisma.motoboy.update({
+        where: { id: motoboyId },
+        data: { status: 'OCUPADO' },
+      });
+
+      return { message: 'Entrega aceita com sucesso.' };
+    }
+
+    // Finalizar entrega
+    if (action === 'COMPLETED') {
+      await this.prisma.delivery.update({
+        where: { id: deliveryId },
+        data: {
+          status: DeliveryStatus.COMPLETED,
+        },
+      });
+
+      return { message: 'Entrega finalizada com sucesso.' };
+    }
+
+    throw new BadRequestException('Ação inválida');
   }
-  async findByUserId(userId: number) {
+
+  // Buscar motoboy com base no ID do usuário
+  async findByUserId(userId: number): Promise<MotoboyEntity> {
     const motoboy = await this.prisma.motoboy.findUnique({
       where: { userId: Number(userId) },
     });
@@ -223,6 +247,6 @@ export class MotoboyService {
       throw new NotFoundException('Motoboy não encontrado');
     }
 
-    return motoboy;
+    return this.mapToMotoboyEntity(motoboy);
   }
 }
