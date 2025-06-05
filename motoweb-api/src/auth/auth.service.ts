@@ -1,10 +1,14 @@
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserEntity } from './entities/user.entity';
-import { CreateUserDto } from '../auth/dto/create-user.dto';
-import { UpdateUserDto } from '../auth/dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +17,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  //Mapear para UserEntity
+  // Mapeia o usuário retornado do banco para a entidade usada na API
   private mapToUserEntity(user: any): UserEntity {
     return {
       id: user.id,
@@ -30,21 +34,21 @@ export class AuthService {
     };
   }
 
-  //Cadastrar Usuário
+  // Cria um novo usuário, aplicando hash na senha e validando duplicidade de e-mail
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const { name, email, phone, address, password, profileType } =
-      createUserDto;
+    const { name, email, phone, address, password, profileType } = createUserDto;
 
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email },
-    });
+    const existingUser = await this.prisma.user.findUnique({ where: { email } });
 
+    // Valida se já existe um usuário com o mesmo e-mail
     if (existingUser) {
       throw new UnauthorizedException('Email já cadastrado');
     }
 
+    // Gera o hash da senha
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Cria o usuário no banco
     const user = await this.prisma.user.create({
       data: {
         name,
@@ -56,27 +60,32 @@ export class AuthService {
       },
     });
 
+    // Retorna a entidade mapeada
     return this.mapToUserEntity(user);
   }
 
-  //Login
+  // Realiza o login validando o e-mail e senha, e gera um token JWT
   async login(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
+    // Verifica se o usuário existe
     if (!user) {
       throw new UnauthorizedException('Email ou senha inválidos');
     }
 
+    // Compara a senha informada com o hash armazenado
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
+    // Senha inválida
     if (!isPasswordValid) {
       throw new UnauthorizedException('Email ou senha inválidos');
     }
 
+    // Retorna o token
     return this.generateToken(user.id, user.email, user.profileType);
   }
 
-  //Gerar Token
+  // Gera o JWT contendo o ID, e-mail e perfil do usuário
   private generateToken(userId: number, email: string, profileType: string) {
     const payload = { sub: userId, email, profileType };
     return {
@@ -84,20 +93,20 @@ export class AuthService {
     };
   }
 
-  //Listar todos os usuários
+  // Retorna todos os usuários ativos (não deletados)
   async findAll(): Promise<UserEntity[]> {
     const users = await this.prisma.user.findMany({
       where: { isDeleted: false },
     });
+
     return users.map(this.mapToUserEntity);
   }
 
-  //Buscar usuário por ID
+  // Busca um usuário específico pelo ID
   async findOne(id: number): Promise<UserEntity> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-    });
+    const user = await this.prisma.user.findUnique({ where: { id } });
 
+    // Verifica se o usuário foi deletado ou não existe
     if (!user || user.isDeleted) {
       throw new NotFoundException('Usuário não encontrado');
     }
@@ -105,13 +114,18 @@ export class AuthService {
     return this.mapToUserEntity(user);
   }
 
-  //Atualizar usuário
+  // Atualiza os dados de um usuário existente
   async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({ where: { id } });
 
     if (!user || user.isDeleted) {
       throw new NotFoundException('Usuário não encontrado');
     }
+
+    // Se a senha foi alterada, aplica novo hash; caso contrário, mantém a anterior
+    const hashedPassword = updateUserDto.password
+      ? await bcrypt.hash(updateUserDto.password, 10)
+      : user.password;
 
     const updatedUser = await this.prisma.user.update({
       where: { id },
@@ -120,9 +134,7 @@ export class AuthService {
         email: updateUserDto.email,
         phone: updateUserDto.phone,
         address: updateUserDto.address,
-        password: updateUserDto.password
-          ? await bcrypt.hash(updateUserDto.password, 10)
-          : user.password,
+        password: hashedPassword,
         profileType: updateUserDto.profileType,
       },
     });
@@ -130,7 +142,7 @@ export class AuthService {
     return this.mapToUserEntity(updatedUser);
   }
 
-  //Deletar usuário
+  // Aplica soft delete no usuário (não remove fisicamente)
   async remove(id: number) {
     const user = await this.prisma.user.findUnique({ where: { id } });
 

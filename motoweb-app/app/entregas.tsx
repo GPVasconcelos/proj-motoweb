@@ -46,17 +46,15 @@ export default function Entregas() {
     }
   };
 
-  const updateStatus = async (deliveryId: number, status: string) => {
-    try {
-      await api.patch(`/motoboy/${motoboyId}/delivery/${deliveryId}/status`, {
-        status,
-      });
-      Alert.alert("Sucesso", `Status atualizado para ${status}`);
-      loadDeliveries();
-    } catch {
-      Alert.alert("Erro", "Não foi possível atualizar o status.");
-    }
-  };
+  const responderEntrega = async (deliveryId: number, action: 'ACEITAR' | 'RECUSAR' | 'COMPLETED') => {
+  try {
+    await api.patch(`/motoboy/${motoboyId}/delivery/${deliveryId}/status`, { action });
+    Alert.alert("Sucesso", `Entrega ${action === 'ACEITAR' ? 'aceita' : 'recusada'} com sucesso.`);
+    loadDeliveries();
+  } catch {
+    Alert.alert("Erro", "Não foi possível atualizar a entrega.");
+  }
+};
 
   useEffect(() => {
     loadDeliveries();
@@ -108,7 +106,7 @@ export default function Entregas() {
           <>
             <TouchableOpacity
               style={styles.buttonPrimary}
-              onPress={() => updateStatus(item.id, "IN_PROGRESS")}
+              onPress={() => responderEntrega(item.id, "ACEITAR")}
             >
               <FontAwesome name="check" size={18} color="#fff" />
               <Text style={styles.buttonText}>Aceitar Entrega</Text>
@@ -116,7 +114,7 @@ export default function Entregas() {
 
             <TouchableOpacity
               style={styles.buttonDanger}
-              onPress={() => updateStatus(item.id, "CANCELED")}
+              onPress={() => responderEntrega(item.id, "RECUSAR")}
             >
               <MaterialIcons name="cancel" size={20} color="#fff" />
               <Text style={styles.buttonText}>Recusar Entrega</Text>
@@ -127,7 +125,7 @@ export default function Entregas() {
         {item.status === "IN_PROGRESS" && (
           <TouchableOpacity
             style={styles.buttonSuccess}
-            onPress={() => updateStatus(item.id, "COMPLETED")}
+            onPress={() => responderEntrega(item.id, "COMPLETED")}
           >
             <FontAwesome name="check-circle" size={20} color="#fff" />
             <Text style={styles.buttonText}>Finalizar Entrega</Text>

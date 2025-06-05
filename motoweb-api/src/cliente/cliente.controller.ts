@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ClientService } from '../cliente/cliente.service';
 import { CreateClientDto } from '../cliente/dto/create-cliente.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
@@ -7,58 +15,67 @@ import { UpdateClientDto } from './dto/update-client.dto';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  //Cadastrar um Cliente
+  // Cadastrar um novo cliente
   @Post()
   createClient(@Body() createClientDto: CreateClientDto) {
     return this.clientService.createClient(createClientDto);
   }
 
-  //Listar Clientes
+  // Listar todos os clientes
   @Get()
   getClients() {
     return this.clientService.getClients();
   }
 
-  //Obter Cliente por ID
+  // Buscar cliente pelo ID
   @Get(':id')
   getClientById(@Param('id') id: string) {
     return this.clientService.getClientById(parseInt(id));
   }
 
-  //Atualizar Cliente
+  // Atualizar cliente existente
   @Patch(':id')
-  updateClient(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+  updateClient(
+    @Param('id') id: string,
+    @Body() updateClientDto: UpdateClientDto,
+  ) {
     return this.clientService.updateClient(parseInt(id), updateClientDto);
   }
 
-  //Remover Cliente
+  // Remover cliente (remoção física)
   @Delete(':id')
   deleteClient(@Param('id') id: string) {
     return this.clientService.deleteClient(parseInt(id));
   }
 
-  //Criar Entrega
+  // Criar entrega a partir de um cliente
   @Post(':userId/delivery')
   createDelivery(
     @Param('userId') userId: string,
-    @Body() data: { supplierId: number; pickup: string; destination: string; recipient: string; serviceType: string }
+    @Body()
+    data: {
+      supplierId: number;
+      pickup: string;
+      destination: string;
+      recipient: string;
+      serviceType: string;
+    },
   ) {
     return this.clientService.createDelivery(parseInt(userId), data);
   }
 
-  //Listar Entregas do Cliente
+  // Listar todas as entregas de um cliente
   @Get(':id/delivery')
   getDeliverysByClient(@Param('id') id: string) {
     return this.clientService.getDeliverysByClient(parseInt(id));
   }
-  
-  //Cancelar Entrega
+
+  // Cancelar uma entrega do cliente
   @Patch(':userId/delivery/:deliveryId/cancel')
   cancelDelivery(
-    @Param('userId') userId: number,
-    @Param('deliveryId') deliveryId: number,
+    @Param('userId') userId: string,
+    @Param('deliveryId') deliveryId: string,
   ) {
     return this.clientService.cancelDelivery(userId, deliveryId);
   }
-
 }

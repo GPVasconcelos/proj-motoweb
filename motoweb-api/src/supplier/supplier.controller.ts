@@ -1,66 +1,73 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { SupplierService } from '../supplier/supplier.service';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
-import { DeliveryStatus } from '@prisma/client';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
-import { ParseIntPipe } from '@nestjs/common/pipes/parse-int.pipe';
 
 @Controller('supplier')
 export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}
 
-  //Cadastrar uma Central Fornecedora
+  // Cadastrar uma nova central fornecedora
   @Post()
   createSupplier(@Body() createSupplierDto: CreateSupplierDto) {
     return this.supplierService.createSupplier(createSupplierDto);
   }
 
-  //Atualizar Central Fornecedora
+  // Atualizar dados da central fornecedora
   @Patch(':id')
   updateSupplier(
-    @Param('id') id: string,
-    @Body() updateSupplierDto: UpdateSupplierDto
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateSupplierDto: UpdateSupplierDto,
   ) {
-    return this.supplierService.updateSupplier(parseInt(id), updateSupplierDto);
+    return this.supplierService.updateSupplier(id, updateSupplierDto);
   }
 
-  //Remover Central Fornecedora
+  // Remover central fornecedora
   @Delete(':id')
-  async deleteSupplier(@Param('id') id: string) {
-    return this.supplierService.deleteSupplier(parseInt(id));
+  deleteSupplier(@Param('id', ParseIntPipe) id: number) {
+    return this.supplierService.deleteSupplier(id);
   }
 
-  //Listar Centrais Fornecedora
+  // Listar todas as centrais fornecedoras
   @Get()
-  async getAllSuppliers() {
+  getAllSuppliers() {
     return this.supplierService.getAllSuppliers();
   }
 
-  //Obter Central Fornecedora por ID
+  // Obter central fornecedora por ID
   @Get(':id')
-  async getSupplierById(@Param('id') id: string) {
-    return this.supplierService.getSupplierById(parseInt(id));
+  getSupplierById(@Param('id', ParseIntPipe) id: number) {
+    return this.supplierService.getSupplierById(id);
   }
 
-  //Visualizar Entregas
+  // Listar todas as entregas da central fornecedora
   @Get(':id/delivery')
   findDeliveriesBySupplier(@Param('id', ParseIntPipe) id: number) {
-  return this.supplierService.getDeliveryBySupplier(id);
-}
+    return this.supplierService.getDeliveryBySupplier(id);
+  }
 
-  //Vi sualizar Entregas Pendentes
-  @Get(':userid/delivery/pending')
-  async getPendingDeliverys(@Param('userid', ParseIntPipe) userId: number) {
+  // Listar entregas pendentes da central fornecedora
+  @Get(':userId/delivery/pending')
+  getPendingDeliverys(@Param('userId', ParseIntPipe) userId: number) {
     return this.supplierService.getPendingDeliverys(userId);
   }
 
-  //vizualizar motoboys disponiveis
-    @Get(':id/motoboys')
+  // Listar motoboys disponíveis para a central fornecedora
+  @Get(':id/motoboys')
   getMotoboys(@Param('id', ParseIntPipe) id: number) {
     return this.supplierService.getMotoboys(id);
   }
 
-  //Atribuir Motoboy a uma Entrega
+  // Atribuir motoboy a uma entrega
   @Patch(':userId/delivery/:deliveryId/assign')
   assignMotoboy(
     @Param('userId', ParseIntPipe) userId: number,
@@ -70,9 +77,9 @@ export class SupplierController {
     return this.supplierService.assignMotoboy(userId, deliveryId, motoboyId);
   }
 
-  //Histórico de Entregas
+  // Histórico completo de entregas da central
   @Get(':userId/delivery/history')
-  async getDeliveryHistory(@Param('userId', ParseIntPipe) userId: number) {
+  getDeliveryHistory(@Param('userId', ParseIntPipe) userId: number) {
     return this.supplierService.getDeliveryHistory(userId);
   }
 }
