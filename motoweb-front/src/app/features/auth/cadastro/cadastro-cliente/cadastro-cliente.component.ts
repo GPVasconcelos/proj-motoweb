@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ClienteService } from '../../../cliente/services/cliente.service';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -27,8 +27,8 @@ export class CadastroClienteComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private clienteService: ClienteService
   ) {}
 
   /**
@@ -56,7 +56,7 @@ export class CadastroClienteComponent implements OnInit {
       sector: this.formData.sector
     };
 
-    this.http.post('http://localhost:3000/client', payload).subscribe({
+    this.clienteService.registerClient(payload).subscribe({
       next: () => {
         alert('Cadastro de cliente realizado com sucesso!');
         this.router.navigate(['/login']);

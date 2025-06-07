@@ -1,0 +1,37 @@
+<h2 class="text-center fw-bold my-4">
+  <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+  Histórico de Entregas
+</h2>
+
+<div class="table-responsive px-3">
+  <table class="table table-bordered table-hover align-middle text-center">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Retirada</th>
+        <th>Destino</th>
+        <th>Destinatário</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of delivery">
+        <td>{{ d.id }}</td>
+        <td>{{ d.pickup }}</td>
+        <td>{{ d.destination }}</td>
+        <td>{{ d.recipient }}</td>
+        <td>
+          <span 
+            class="badge text-uppercase"
+            [ngClass]="{
+              'bg-success': d.status === 'COMPLETED',
+              'bg-warning text-dark': d.status === 'IN_PROGRESS',
+              'bg-danger': d.status === 'CANCELED'
+            }">
+            {{ d.status }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

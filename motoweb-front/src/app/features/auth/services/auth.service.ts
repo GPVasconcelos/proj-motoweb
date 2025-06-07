@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
+import { environment } from '../../../config/environment';
+import { jwtDecode} from 'jwt-decode'; // Importa a biblioteca jwt-decode para decodificar tokens JWT
 
 
 @Injectable({
@@ -9,7 +11,7 @@ import { Observable, catchError, map, of, throwError } from 'rxjs';
 })
 export class AuthService {
 
-  private api = 'http://localhost:3000/auth'; // URL base da API backend
+  private api = `${environment.API_URL}/auth`; // URL base da API backend
   private tokenKey = 'auth_token';
 
   constructor(
@@ -27,6 +29,13 @@ export class AuthService {
         }
         return false;
       }),
+      catchError(this.handleError)
+    );
+  }
+
+   // Realiza cadastro de usuário
+  register(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.api}/register`, payload).pipe(
       catchError(this.handleError)
     );
   }
@@ -69,4 +78,41 @@ export class AuthService {
     }
     return throwError(() => new Error('Erro na autenticação. Verifique email e senha.'));
   }
+
+  // Decodifica o token armazenado
+  getDecodedToken(): any | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      return jwtDecode(token);
+    } catch {
+      return null;
+    }
+  }
+
+  // Verifica se o usuário está autenticado
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    const decodedToken = this.getDecodedToken();
+    if (!decodedToken) return false;
+
+    // Verifica se o token expirou
+    const currentTime = Math.floor(Date.now() / 1000); // Tempo atual em segundos
+    return decodedToken.exp > currentTime;
+  }
+
+  // Retorna o tipo de perfil do usuário
+  getProfileType(): string | null {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return null;
+
+   try {
+      const decoded: any = jwtDecode(token);
+      return decoded.profileType || null;
+    } catch {
+    return null;
+  }
+}
 }
