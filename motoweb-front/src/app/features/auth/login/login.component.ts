@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../services/auth.service'; 
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,7 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private http: HttpClient
+    private authService: AuthService
   ) {}
 
   /**
@@ -33,24 +34,15 @@ export class LoginComponent {
     this.loading = true;
     this.loginError = false;
 
-    // Montagem do payload para requisição
-    const payload = {
-      email: this.email,
-      password: this.password
-    };
-
+ 
     // Chamada à API de autenticação
-    this.http.post<any>('http://localhost:3000/auth/login', payload).subscribe({
+    this.authService.login(this.email, this.password).subscribe({
       next: (res) => {
-        this.loading = false;
+        this.loading = false; 
 
-        // Verifica se há token de acesso na resposta
-        if (res && res.accessToken) {
-          localStorage.setItem('token', res.accessToken);
-
-          // Decodifica o token JWT para extrair informações do perfil
-          const tokenPayload = JSON.parse(atob(res.accessToken.split('.')[1]));
-          const role = tokenPayload.profileType;
+          if (res) {
+          const user = this.authService.getUserProfile();
+          const role = user?.profileType;
 
           // Redireciona para a rota correspondente ao tipo de usuário
           switch (role) {

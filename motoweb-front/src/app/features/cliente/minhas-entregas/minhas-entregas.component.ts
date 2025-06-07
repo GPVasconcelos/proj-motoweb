@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DeliveryService } from '../../../core/service/delivery.service';
 import { jwtDecode } from 'jwt-decode';
-import { HttpClient } from '@angular/common/http';
+import { ClienteService } from '../services/cliente.service'; // ajuste conforme o caminho real
+import { AuthService } from '../../auth/services/auth.service'; // Importa o serviço de autenticação
 
 @Component({
   selector: 'app-minhas-entregas',
@@ -11,74 +11,49 @@ import { HttpClient } from '@angular/common/http';
   imports: [CommonModule]
 })
 export class MinhasEntregasComponent implements OnInit {
-
-  delivery: any[] = [];
-  clientId: number = 0;
+  delivery: any[] = []; // Lista de entregas do cliente
+  clientId: number = 0; // ID do cliente extraído do token
 
   constructor(
-    private deliveryService: DeliveryService,
-    private http: HttpClient
+    private clienteService: ClienteService, 
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.decodeToken();
+     this.clientId = this.authService.getDecodedToken()?.sub;
+      if (!this.clientId) {
+      console.error('ID não encontrado no token.');
+  }
     this.loadDeliveries();
   }
 
-  /**
-   * Decodifica o token JWT 
-   */
-  decodeToken(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decoded: any = jwtDecode(token);
-      this.clientId = decoded.sub;
-    } else {
-      console.error('Token não encontrado.');
-    }
-  }
-
-  /**
-   * Carrega as entregas do cliente logado
-   */
+  // Carrega as entregas do cliente logado
   loadDeliveries(): void {
     if (!this.clientId) {
-      console.error('Client ID não definido. Verifique o token.');
+      console.error('Client ID não definido.');
       return;
     }
 
-    this.http.get<any[]>(`http://localhost:3000/client/${this.clientId}/delivery`).subscribe({
-      next: (res) => {
-        this.delivery = res;
-      },
-      error: (err) => {
-        console.error('Erro ao carregar entregas:', err);
-      }
+    this.clienteService.getDeliveryByClient(this.clientId).subscribe({
+      next: (res) => this.delivery = res,
+      error: (err) => console.error('Erro ao carregar entregas:', err)
     });
   }
 
-  /**
-   * Cancela uma entrega e recarrega a lista
-   */
+  // Cancela uma entrega e recarrega a lista
   cancelDelivery(deliveryId: number): void {
     if (!this.clientId) {
-      console.error('Client ID não definido. Cancelamento abortado.');
+      console.error('Client ID não definido.');
       return;
     }
 
-    this.deliveryService.cancelDelivery(this.clientId, deliveryId).subscribe({
-      next: () => {
-        this.loadDeliveries(); // Atualiza lista após cancelamento
-      },
-      error: (err) => {
-        console.error('Erro ao cancelar entrega:', err);
-      }
+    this.clienteService.cancelDelivery(this.clientId, deliveryId).subscribe({
+      next: () => this.loadDeliveries(),
+      error: (err) => console.error('Erro ao cancelar entrega:', err)
     });
   }
 
-  /**
-   * Define classes de estilo com base no status da entrega
-   */
+  // Define classes visuais conforme o status da entrega
   getStatusClass(status: string): string {
     switch (status) {
       case 'PENDING':

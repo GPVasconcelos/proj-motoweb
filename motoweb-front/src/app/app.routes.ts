@@ -7,21 +7,26 @@ import { CadastroComponent } from './features/auth/cadastro/cadastro.component';
 import { CadastroClienteComponent } from './features/auth/cadastro/cadastro-cliente/cadastro-cliente.component';
 import { CadastroCentralComponent } from './features/auth/cadastro/cadastro-central/cadastro-central.component';
 import { EntregasComponent } from './features/supplier/entregas/entregas.component';
-import { SupplierModule } from './features/supplier/supplier.module';
 import { DashboardSupplierComponent } from './features/supplier/dashboard/dashboard.component';
+import { HistoricoComponent } from './features/supplier/historico/historico.component';
+
+import { AuthGuard } from './core/guards/auth.guard';
+import { RoleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
-  // Rota de login
   { path: 'login', component: LoginComponent },
-   // rotas de cadastro
+
+  // Cadastro geral e por tipo
   { path: 'cadastro', component: CadastroComponent },
   { path: 'cadastro/cadastro-cliente/:userId', component: CadastroClienteComponent },
   { path: 'cadastro/cadastro-central/:userId', component: CadastroCentralComponent },
 
-  // Rotas protegidas do cliente
+  // Rotas do cliente
   {
     path: 'cliente',
     component: DashboardComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['CLIENTE'] },
     children: [
       { path: '', redirectTo: 'minhas-entregas', pathMatch: 'full' },
       { path: 'minhas-entregas', component: MinhasEntregasComponent },
@@ -29,19 +34,19 @@ export const routes: Routes = [
     ]
   },
 
-  // Rotas protegidas do fornecedor
+  // Rotas do fornecedor
   {
     path: 'supplier',
     component: DashboardSupplierComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['CENTRAL'] },
     children: [
       { path: 'entregas', component: EntregasComponent },
-      { path: '', redirectTo: 'entregas', pathMatch: 'full' }
+      { path: '', redirectTo: 'entregas', pathMatch: 'full' },
+      { path: 'historico', component: HistoricoComponent }
     ]
   },
 
-  // Redirecionamento padrão
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-
-  // Rota coringa para páginas não encontradas
   { path: '**', redirectTo: 'login' }
 ];
