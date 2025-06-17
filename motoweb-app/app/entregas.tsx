@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Image,
 } from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import api from "../src/services/api";
@@ -46,15 +47,23 @@ export default function Entregas() {
     }
   };
 
-  const responderEntrega = async (deliveryId: number, action: 'ACEITAR' | 'RECUSAR' | 'COMPLETED') => {
-  try {
-    await api.patch(`/motoboy/${motoboyId}/delivery/${deliveryId}/status`, { action });
-    Alert.alert("Sucesso", `Entrega ${action === 'ACEITAR' ? 'aceita' : 'recusada'} com sucesso.`);
-    loadDeliveries();
-  } catch {
-    Alert.alert("Erro", "Não foi possível atualizar a entrega.");
-  }
-};
+  const responderEntrega = async (
+    deliveryId: number,
+    action: "ACEITAR" | "RECUSAR" | "COMPLETED"
+  ) => {
+    try {
+      await api.patch(`/motoboy/${motoboyId}/delivery/${deliveryId}/status`, {
+        action,
+      });
+      Alert.alert(
+        "Sucesso",
+        `Entrega ${action === "ACEITAR" ? "aceita" : "recusada"} com sucesso.`
+      );
+      loadDeliveries();
+    } catch {
+      Alert.alert("Erro", "Não foi possível atualizar a entrega.");
+    }
+  };
 
   useEffect(() => {
     loadDeliveries();
@@ -93,6 +102,12 @@ export default function Entregas() {
         <Text style={styles.label}>Destinatário:</Text>
         <Text style={styles.value}>{item.recipient}</Text>
       </View>
+
+      <Image
+        source={require("../assets/images/mapa-gps.png")}
+        style={styles.mapImage}
+        resizeMode="contain"
+      />
 
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Status:</Text>
@@ -213,8 +228,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textTransform: "capitalize",
   },
+  mapImage: {
+    width: "100%",
+    height: 180,
+    borderRadius: 12,
+    marginVertical: 10,
+  },
   buttons: {
-    marginTop: 14,
+    marginTop: 8,
     flexDirection: "column",
     gap: 8,
   },

@@ -10,8 +10,6 @@ import {
 import { useRouter } from "expo-router";
 import { useAuth } from "../src/contexts/AuthContext";
 
-const screenWidth = Dimensions.get("window").width;
-
 export default function Dashboard() {
   const { logout, user } = useAuth();
   const router = useRouter();
