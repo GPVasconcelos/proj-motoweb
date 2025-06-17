@@ -65,9 +65,9 @@ export class ClientController {
   }
 
   // Listar todas as entregas de um cliente
-  @Get(':id/delivery')
-  getDeliverysByClient(@Param('id') id: string) {
-    return this.clientService.getDeliverysByClient(parseInt(id));
+  @Get(':userId/delivery')
+  getDeliverysByClient(@Param('userId') userId: string) {
+    return this.clientService.getDeliverysByClient(parseInt(userId));
   }
 
   // Cancelar uma entrega do cliente

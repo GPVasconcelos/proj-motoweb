@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { jwtDecode } from 'jwt-decode';
+import { AuthService } from '../../auth/services/auth.service'; 
+import { SupplierService } from '../../supplier/services/supplier.service'; // Importa o serviço de fornecedores
+import { ClienteService } from '../services/cliente.service'; // Importa o serviço de cliente
 
 @Component({
   selector: 'app-nova-entrega',
@@ -14,7 +15,7 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class NovaEntregaComponent implements OnInit {
 
-  userId: number = 0;
+  clientId: number = 0; 
   suppliers: any[] = [];
 
   formData = {
@@ -26,40 +27,25 @@ export class NovaEntregaComponent implements OnInit {
   };
 
   constructor(
-    private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authService: AuthService, 
+    private supplierService: SupplierService,
+    private clienteService: ClienteService 
   ) {}
 
-  /**
-   * Inicializa o componente carregando os dados essenciais.
-   */
+  //Inicializa o componente carregando os dados essenciais. 
   ngOnInit(): void {
-    this.decodeToken();
+     this.clientId = this.authService.getDecodedToken()?.sub;
+      if (!this.clientId) {
+      console.error('ID não encontrado no token.');
+  }
     this.loadSuppliers();
   }
 
-  /**
-   * Decodifica o token JWT armazenado e obtém o ID do cliente (userId).
-   */
-  decodeToken(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decoded: any = jwtDecode(token);
-        this.userId = decoded.sub;
-      } catch {
-        console.error('Erro ao decodificar o token.');
-      }
-    } else {
-      console.error('Token não encontrado.');
-    }
-  }
 
-  /**
-   * Carrega as centrais (fornecedores) disponíveis para o select.
-   */
+  // Carrega as centrais (fornecedores) disponíveis para o select.
   loadSuppliers(): void {
-    this.http.get<any[]>('http://localhost:3000/supplier').subscribe({
+    this.supplierService.getSuppliers().subscribe({
       next: (res) => {
         this.suppliers = res;
       },
@@ -69,15 +55,8 @@ export class NovaEntregaComponent implements OnInit {
     });
   }
 
-  /**
-   * Envia a solicitação de entrega com os dados preenchidos.
-   */
+  // Envia a solicitação de entrega com os dados preenchidos.
   onSubmit(): void {
-    if (!this.userId) {
-      alert('Usuário não autenticado.');
-      return;
-    }
-
     const payload = {
       supplierId: Number(this.formData.supplierId),
       pickup: this.formData.pickup,
@@ -86,7 +65,7 @@ export class NovaEntregaComponent implements OnInit {
       serviceType: this.formData.serviceType
     };
 
-    this.http.post(`http://localhost:3000/client/${this.userId}/delivery`, payload).subscribe({
+    this.clienteService.requestDelivery(this.clientId, payload).subscribe({
       next: () => {
         alert('Entrega solicitada com sucesso!');
         this.router.navigate(['/cliente/minhas-entregas']);

@@ -1,6 +1,9 @@
 {
   "name": "motoweb-front",
   "version": "0.0.0",
+  "engines": {
+    "node": ">= 18 >22"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -29,7 +32,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.6",
-    "@angular/cli": "^19.2.6",
+    "@angular/cli": "^19.2.14",
     "@angular/compiler-cli": "^19.2.0",
     "@types/jasmine": "~5.1.0",
     "@types/jwt-decode": "^2.2.1",
