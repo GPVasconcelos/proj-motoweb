@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -24,7 +24,7 @@ export class CadastroComponent {
   };
 
   constructor(
-    private http: HttpClient,
+    private authService: AuthService, 
     private router: Router
   ) {}
 
@@ -50,19 +50,23 @@ export class CadastroComponent {
     };
 
     // Requisição de registro para a API
-    this.http.post<any>('http://localhost:3000/auth/register', payload).subscribe({
+    this.authService.register(payload).subscribe({
       next: (res) => {
         const userId = res.id;
 
         // Redireciona conforme o perfil selecionado
-        if (this.formData.profileType === 'CLIENTE') {
-          this.router.navigate(['/cadastro/cadastro-cliente', userId]);
-        } else if (this.formData.profileType === 'CENTRAL') {
-          this.router.navigate(['/cadastro/cadastro-central', userId]);
-        } else {
-          alert('Tipo de perfil não reconhecido.');
+        switch (this.formData.profileType) {
+          case 'CLIENTE':
+            this.router.navigate(['/cadastro/cadastro-cliente', userId]);
+            break;
+          case 'CENTRAL':
+            this.router.navigate(['/cadastro/cadastro-central', userId]);
+            break;
+          default:
+            alert('Tipo de perfil não reconhecido.');
         }
       },
+      // Tratamento de erro na requisição
       error: (err) => {
         console.error('Erro ao cadastrar:', err);
         alert('Erro ao cadastrar. Verifique os dados e tente novamente.');
