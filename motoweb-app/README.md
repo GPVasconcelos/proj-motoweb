@@ -1,50 +1,128 @@
-# Welcome to your Expo app 👋
+# 📱 MotoWeb App - React Native
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo mobile desenvolvido com **React Native + Expo**, voltado para entregadores (motoboys) que atuam na plataforma **MotoWeb**. O app permite acompanhar entregas, aceitar entregas e atualizar status.
 
-## Get started
+> 🎯 Projeto acadêmico | Engenharia de Software - Faculdade Assis Gurgacz - FAG (2025)
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 📌 Sobre
 
-2. Start the app
+Este aplicativo é o módulo **Motoboy** da plataforma **MotoWeb**, onde os entregadores acessam suas entregas em tempo real, notificações, status, histórico e dados do veículo.
 
-   ```bash
-   npx expo start
-   ```
+O app consome uma **API RESTful desenvolvida em NestJS**, hospedada no [Railway](https://railway.app/).
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🚀 Funcionalidades
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Autenticação JWT** via login
+- **Listagem de entregas pendentes**
+- **Aceitação de entrega**
+- **Início e conclusão de rota**
+- **Atualização de status da entrega**
+- **Histórico de entregas finalizadas**
+- **Gerenciamento de veículo**
+- **Notificações de novas entregas**
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 📷 Telas
 
-```bash
-npm run reset-project
-```
+- **Login**
+- **Lista de entregas disponíveis**
+- **Detalhes da entrega**
+- **Histórico**
+- **Perfil do motoboy**
+- **Tela de erro / conexão**
+- **SplashScreen com carregamento**
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 🔗 Endpoints Consumidos
 
-To learn more about developing your project with Expo, look at the following resources:
+Abaixo estão os endpoints da API utilizados pelo app mobile (módulo motoboy):
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+ 🔐 Autenticação
 
-## Join the community
+````
+POST   /auth/login
+GET    /motoboy/user/{userId}
+````
 
-Join our community of developers creating universal apps.
+🧍 Motoboy (perfil)
+````
+GET    /motoboy
+GET    /motoboy/{id}
+POST   /motoboy
+PATCH  /motoboy/{id}
+DELETE /motoboy/{id}
+````
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+🛵 Veículos
+````
+POST   /motoboy/{id}/vehicles
+GET    /motoboy/{id}/vehicles
+PATCH  /motoboy/{id}/vehicles/{vehicleId}
+DELETE /motoboy/{id}/vehicles/{vehicleId}
+````
+
+📦 Entregas
+````
+GET    /motoboy/{id}/delivery               
+PATCH  /motoboy/{id}/delivery/{deliveryId}/status
+````
+---
+
+## 🛠️ Tecnologias
+
+- React Native
+- Expo
+- TypeScript
+- Axios
+- React Navigation
+- Expo Router
+- Context API
+
+---
+
+## 🏗️ Estrutura de Pastas
+````
+motoweb-app/
+├── app/                 
+│   ├── _layout.tsx      
+│   ├── index.tsx        
+│   ├── dashboard.tsx    
+│   ├── entregas.tsx     
+│   ├── veiculos.tsx     
+│   └── (auth)/         
+├── assets/              
+├── components/         
+├── constants/        
+├── hooks/               
+├── scripts/             
+├── src/                
+├── app.json           
+├── eas.json           
+├── package.json
+├── README.md
+````
+---
+
+## 📲 Instalar o App
+
+Você pode baixar o APK diretamente neste link:
+
+👉 **[Clique aqui para baixar o APK](https://expo.dev/accounts/gholiveira/projects/motoweb-app/builds/044bb1b6-ccbe-44ff-bd83-9807b8b331ad)**
+
+> Compatível com Android   
+> Basta instalar e permitir a origem desconhecida no primeiro uso.
+
+---
+
+👨‍💻 Autores
+- Desenvolvido por **Guilherme Poit Vasconcelos** — [GitHub](https://github.com/GPVasconcelos)
+- Desenvolvido por **Gustavo Oliveira** — [GitHub](https://github.com/Gholiveira6)
+
+📜 Licença
+Uso educacional. Projeto acadêmico da Faculdade Assis Gurgacz (FAG) - 2025.
