@@ -1,8 +1,7 @@
-import { API_URL } from '@env'; 
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: "https://motoweb-api-production.up.railway.app",
 });
 
 export default api;
